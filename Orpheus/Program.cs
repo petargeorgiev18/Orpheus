@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Orpheus.Data;
+using Orpheus.Data.Models;
 
 namespace Orpheus
 {
@@ -16,7 +17,7 @@ namespace Orpheus
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<OrpheusAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<OrpheusDbContext>();
             builder.Services.AddControllersWithViews();
 
