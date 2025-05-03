@@ -7,6 +7,7 @@ namespace Orpheus.Data
 {
     public class OrpheusDbContext : IdentityDbContext<OrpheusAppUser, IdentityRole<Guid>, Guid>
     {
+        public OrpheusDbContext() { }
         public OrpheusDbContext(DbContextOptions<OrpheusDbContext> options)
             : base(options)
         {
