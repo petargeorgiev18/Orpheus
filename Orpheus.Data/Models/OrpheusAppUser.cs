@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
+using Microsoft.AspNetCore.Identity;
 
 namespace Orpheus.Data.Models
 {
@@ -8,5 +10,17 @@ namespace Orpheus.Data.Models
         {
             Id = Guid.NewGuid();
         }
+        [Required]
+        public string PhoneNum { get; set; } = null!;
+        public string? Street { get; set; }
+        [Required]
+        public string City { get; set; } = null!;
+        public string Country { get; set; } = null!;
+        [Required]
+        public string ZipCode { get; set; } = null!;
+        public ICollection<Order> Orders { get; set; }
+            = new List<Order>();
+        public ICollection<Review> Reviews { get; set; }
+            = new List<Review>();
     }
 }

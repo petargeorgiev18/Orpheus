@@ -11,5 +11,11 @@ namespace Orpheus.Data
             : base(options)
         {
         }
+        public DbSet<Item> Items { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<Order> Orders { get; set; } = null!;
+        public DbSet<OrderItem> OrderItems { get; set; } = null!;
+        public DbSet<Review> Reviews { get; set; } = null!;
+        public DbSet<ItemImage> Images { get; set; } = null!;
     }
 }
