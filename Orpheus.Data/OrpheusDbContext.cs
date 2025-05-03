@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Orpheus.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class OrpheusDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public OrpheusDbContext(DbContextOptions<OrpheusDbContext> options)
             : base(options)
         {
         }
