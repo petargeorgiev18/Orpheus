@@ -8,6 +8,7 @@ namespace Orpheus.Data.Models
         public int Id { get; set; }
         [Required]
         public string CategoryName { get; set; } = null!;
-        public ICollection<Item> Items { get; set; } = new List<Item>();
+        public ICollection<Item> Items { get; set; } 
+            = new List<Item>();
     }
 }
