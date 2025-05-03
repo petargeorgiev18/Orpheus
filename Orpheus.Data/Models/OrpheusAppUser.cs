@@ -15,6 +15,7 @@ namespace Orpheus.Data.Models
         public string? Street { get; set; }
         [Required]
         public string City { get; set; } = null!;
+        [Required]
         public string Country { get; set; } = null!;
         [Required]
         public string ZipCode { get; set; } = null!;
