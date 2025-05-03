@@ -17,7 +17,7 @@ namespace Orpheus.Data.Models
         [Required]
         public PaymentStatus PaymentStatus { get; set; }
         [Required]
-        public DateTime PaidAt { get; set; }
+        public DateTime PaidAt { get; set; } = DateTime.UtcNow;
         [Required]
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
