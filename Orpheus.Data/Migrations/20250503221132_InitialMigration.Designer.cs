@@ -12,7 +12,7 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    [Migration("20250503174959_InitialMigration")]
+    [Migration("20250503221132_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
