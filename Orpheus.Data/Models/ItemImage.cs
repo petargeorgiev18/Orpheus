@@ -8,7 +8,7 @@ namespace Orpheus.Data.Models
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Url { get; set; } = string.Empty;
+        public string Url { get; set; } = null!;
         [Required]
         [ForeignKey(nameof(Item))]
         public int ItemId { get; set; }
