@@ -12,7 +12,7 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    [Migration("20250503221132_InitialMigration")]
+    [Migration("20250504190748_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -160,13 +160,78 @@ namespace Orpheus.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Orpheus.Data.Models.Category", b =>
+            modelBuilder.Entity("Orpheus.Data.Models.Brand", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LogoUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Brand");
+                });
+
+            modelBuilder.Entity("Orpheus.Data.Models.Cart", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Cart");
+                });
+
+            modelBuilder.Entity("Orpheus.Data.Models.CartItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CartId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("CartItem");
+                });
+
+            modelBuilder.Entity("Orpheus.Data.Models.Category", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
@@ -179,14 +244,15 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.Item", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("BrandId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -204,6 +270,8 @@ namespace Orpheus.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BrandId");
+
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Items");
@@ -211,14 +279,12 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.ItemImage", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Url")
                         .IsRequired()
@@ -233,11 +299,9 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -266,24 +330,27 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.OrderItem", b =>
                 {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("OrderId", "ItemId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ItemId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
                 });
@@ -375,11 +442,9 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.Review", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
@@ -390,8 +455,8 @@ namespace Orpheus.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -459,13 +524,51 @@ namespace Orpheus.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orpheus.Data.Models.Cart", b =>
+                {
+                    b.HasOne("Orpheus.Data.Models.OrpheusAppUser", "User")
+                        .WithOne("Cart")
+                        .HasForeignKey("Orpheus.Data.Models.Cart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Orpheus.Data.Models.CartItem", b =>
+                {
+                    b.HasOne("Orpheus.Data.Models.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Orpheus.Data.Models.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Item");
+                });
+
             modelBuilder.Entity("Orpheus.Data.Models.Item", b =>
                 {
+                    b.HasOne("Orpheus.Data.Models.Brand", "Brand")
+                        .WithMany("Items")
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Orpheus.Data.Models.Category", "Category")
                         .WithMany("Items")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Brand");
 
                     b.Navigation("Category");
                 });
@@ -530,6 +633,16 @@ namespace Orpheus.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Orpheus.Data.Models.Brand", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Orpheus.Data.Models.Cart", b =>
+                {
+                    b.Navigation("CartItems");
+                });
+
             modelBuilder.Entity("Orpheus.Data.Models.Category", b =>
                 {
                     b.Navigation("Items");
@@ -549,6 +662,8 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.OrpheusAppUser", b =>
                 {
+                    b.Navigation("Cart");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
