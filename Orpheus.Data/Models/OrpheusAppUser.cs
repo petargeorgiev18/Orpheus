@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,6 +20,7 @@ namespace Orpheus.Data.Models
         public string Country { get; set; } = null!;
         [Required]
         public string ZipCode { get; set; } = null!;
+        public Cart? Cart { get; set; } = null!;
         public ICollection<Order> Orders { get; set; }
             = new List<Order>();
         public ICollection<Review> Reviews { get; set; }

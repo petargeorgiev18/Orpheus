@@ -12,12 +12,17 @@ namespace Orpheus.Data.Models
         [Required]
         public string Description { get; set; } = string.Empty;
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
         [Required]
         [ForeignKey(nameof(Category))]  
-        public int CategoryId { get; set; }
-        public Category Category { get; set; } = new Category();
-        public ICollection<ItemImage>? Images { get; set; } 
+        public Guid CategoryId { get; set; }
+        public Category Category { get; set; } = null!;
+        [Required]
+        [ForeignKey(nameof(Brand))]
+        public Guid BrandId { get; set; }
+        public Brand Brand { get; set; } = null!;
+        public ICollection<ItemImage> Images { get; set; } 
             = new List<ItemImage>();
         public ICollection<Review>? Reviews { get; set; }
             = new List<Review>();

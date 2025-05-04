@@ -11,7 +11,7 @@ namespace Orpheus.Data.Models
         public string Url { get; set; } = null!;
         [Required]
         [ForeignKey(nameof(Item))]
-        public int ItemId { get; set; }
+        public Guid ItemId { get; set; }
         public Item Item { get; set; } = null!;
     }
 }
