@@ -7,6 +7,7 @@ namespace Orpheus.Data.Models
     {
         [Key]
         public Guid Id { get; set; }
+        [Required]
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
         public OrpheusAppUser User { get; set; } = null!;
