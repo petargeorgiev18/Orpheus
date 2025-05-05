@@ -19,5 +19,9 @@ namespace Orpheus.Data
         public DbSet<Review> Reviews { get; set; } = null!;
         public DbSet<ItemImage> Images { get; set; } = null!;
         public DbSet<OrpheusAppUser> OrpheusAppUsers { get; set; } = null!;
+        public DbSet<Cart> Carts { get; set; } = null!;
+        public DbSet<CartItem> CartItems { get; set; } = null!;
+        public DbSet<Brand> Brands { get; set; } = null!;
+        public DbSet<Wishlist> Wishlists { get; set; } = null!;
     }
 }

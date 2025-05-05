@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Orpheus.Common.EntityClassesValidation.Review;
 
 namespace Orpheus.Data.Models
 {
@@ -7,6 +8,7 @@ namespace Orpheus.Data.Models
     {
         [Key]
         public Guid Id { get; set; }
+        [MaxLength(ReviewCommentMaxLength)]
         public string? Comment { get; set; } = string.Empty;
         [Required]
         public int Rating { get; set; }

@@ -13,6 +13,7 @@ namespace Orpheus.Data.Models
         [Required]
         public OrdersStatus OrderStatus { get; set; }
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
         [Required]
         public PaymentStatus PaymentStatus { get; set; }
