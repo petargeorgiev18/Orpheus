@@ -15,4 +15,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Orpheus.Common\Orpheus.Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using static Orpheus.Common.EntityClassesValidation.Item;
 namespace Orpheus.Data.Models
 {
     public class Item
@@ -8,8 +8,10 @@ namespace Orpheus.Data.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(ItemNameMaxLength)]
         public string Name { get; set; } = string.Empty;
         [Required]
+        [MaxLength(ItemDescriptionMaxLength)]
         public string Description { get; set; } = string.Empty;
         [Required]
         [Column(TypeName = "decimal(18,2)")]

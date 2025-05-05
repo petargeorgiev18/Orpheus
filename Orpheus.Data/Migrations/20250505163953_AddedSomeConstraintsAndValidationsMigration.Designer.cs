@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505163953_AddedSomeConstraintsAndValidationsMigration")]
+    partial class AddedSomeConstraintsAndValidationsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -274,16 +277,11 @@ namespace Orpheus.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<Guid?>("WishlistId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
-
-                    b.HasIndex("WishlistId");
 
                     b.ToTable("Items");
                 });
@@ -491,23 +489,6 @@ namespace Orpheus.Data.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("Orpheus.Data.Models.Wishlist", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Wishlists");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -603,10 +584,6 @@ namespace Orpheus.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Orpheus.Data.Models.Wishlist", null)
-                        .WithMany("Items")
-                        .HasForeignKey("WishlistId");
-
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
@@ -672,17 +649,6 @@ namespace Orpheus.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Orpheus.Data.Models.Wishlist", b =>
-                {
-                    b.HasOne("Orpheus.Data.Models.OrpheusAppUser", "User")
-                        .WithOne("Wishlist")
-                        .HasForeignKey("Orpheus.Data.Models.Wishlist", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Orpheus.Data.Models.Brand", b =>
                 {
                     b.Navigation("Items");
@@ -717,13 +683,6 @@ namespace Orpheus.Data.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Reviews");
-
-                    b.Navigation("Wishlist");
-                });
-
-            modelBuilder.Entity("Orpheus.Data.Models.Wishlist", b =>
-                {
-                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

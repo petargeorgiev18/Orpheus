@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
+using static Orpheus.Common.EntityClassesValidation.Brand;
 
 namespace Orpheus.Data.Models
 {
@@ -12,10 +9,13 @@ namespace Orpheus.Data.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
+        [MaxLength(BrandNameMaxLength)]
         public string Name { get; set; } = null!;
         [Required]
+        [MaxLength(BrandDescriptionMaxLength)]
         public string? Description { get; set; }
         [Required]
+        [MaxLength(BrandLogoUrlMaxLength)]
         public string? LogoUrl { get; set; }
         public ICollection<Item> Items { get; set; }
             = new List<Item>();
