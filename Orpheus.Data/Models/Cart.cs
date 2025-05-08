@@ -18,7 +18,7 @@ namespace Orpheus.Data.Models
         [ForeignKey(nameof(User))]
         public Guid UserId { get; set; }
         public OrpheusAppUser User { get; set; } = null!;
-        public ICollection<CartItem>? CartItems { get; set; }
+        public ICollection<CartItem> CartsItems { get; set; }
             = new List<CartItem>();
     }
 }

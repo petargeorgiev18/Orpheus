@@ -26,8 +26,12 @@ namespace Orpheus.Data.Models
         public Brand Brand { get; set; } = null!;
         public ICollection<ItemImage> Images { get; set; } 
             = new List<ItemImage>();
-        public ICollection<Review>? Reviews { get; set; }
+        public ICollection<Review> Reviews { get; set; }
             = new List<Review>();
+        public ICollection<CartItem> CartsItems { get; set; }
+            = new List<CartItem>();
+        public ICollection<WishlistItem> WishlistsItems { get; set; }
+            = new List<WishlistItem>();
         public bool IsAvailable { get; set; } = true;
     }
 }

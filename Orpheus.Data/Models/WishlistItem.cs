@@ -3,14 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Orpheus.Data.Models
 {
-    public class CartItem
+    public class WishlistItem
     {
         [Key]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         [Required]
-        [ForeignKey(nameof(Cart))]
-        public Guid CartId { get; set; }
-        public Cart Cart { get; set; } = null!;
+        [ForeignKey(nameof(Wishlist))]
+        public Guid WishlistId { get; set; }
+        public Wishlist Wishlist { get; set; } = null!;
         [Required]
         [ForeignKey(nameof(Item))]
         public Guid ItemId { get; set; }
