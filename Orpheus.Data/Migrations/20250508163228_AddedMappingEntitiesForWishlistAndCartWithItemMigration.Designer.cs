@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250508163228_AddedMappingEntitiesForWishlistAndCartWithItemMigration")]
+    partial class AddedMappingEntitiesForWishlistAndCartWithItemMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -221,7 +224,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("CartsItems");
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Category", b =>
@@ -522,7 +525,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("WishlistsItems");
+                    b.ToTable("WishlistItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

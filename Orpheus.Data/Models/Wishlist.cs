@@ -12,5 +12,7 @@ namespace Orpheus.Data.Models
         public Guid UserId { get; set; }
         public OrpheusAppUser User { get; set; } = null!;
         public ICollection<Item> Items { get; set; } = new List<Item>();
+        public ICollection<WishlistItem> WishlistsItems { get; set; } 
+            = new List<WishlistItem>();
     }
 }
