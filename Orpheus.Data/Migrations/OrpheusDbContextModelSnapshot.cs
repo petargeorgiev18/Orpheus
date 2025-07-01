@@ -180,7 +180,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Cart", b =>
@@ -197,7 +197,7 @@ namespace Orpheus.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts", t =>
+                    b.ToTable("Carts", null, t =>
                         {
                             t.HasComment("User's Cart");
                         });
@@ -221,7 +221,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("CartsItems");
+                    b.ToTable("CartsItems", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Category", b =>
@@ -237,7 +237,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Item", b =>
@@ -279,7 +279,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.ItemImage", b =>
@@ -300,7 +300,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Images");
+                    b.ToTable("Images", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Order", b =>
@@ -331,7 +331,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.OrderItem", b =>
@@ -358,7 +358,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.OrpheusAppUser", b =>
@@ -482,7 +482,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Wishlist", b =>
@@ -499,7 +499,7 @@ namespace Orpheus.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.WishlistItem", b =>
@@ -522,7 +522,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("WishlistsItems");
+                    b.ToTable("WishlistsItems", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

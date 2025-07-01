@@ -18,9 +18,6 @@ namespace Orpheus.Data.Models
         [MaxLength(CountryMaxLength)]
         public string Country { get; set; } = null!;
         [Required]
-        [MaxLength(PasswordMaxLength)]
-        public string Password { get; set; } = null!;
-        [Required]
         [MaxLength(ZipCodeMaxLength)]
         public string ZipCode { get; set; } = null!;
         public Cart? Cart { get; set; } = null!;
