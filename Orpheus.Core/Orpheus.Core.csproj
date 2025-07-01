@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Orpheus.Data\Orpheus.Data.csproj" />
+  </ItemGroup>
+
 </Project>
