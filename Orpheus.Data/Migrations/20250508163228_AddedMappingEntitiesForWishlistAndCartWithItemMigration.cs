@@ -11,13 +11,13 @@ namespace Orpheus.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Price",
-                table: "CartItems");
+            //migrationBuilder.DropColumn(
+            //    name: "Price",
+            //    table: "CartItems");
 
-            migrationBuilder.DropColumn(
-                name: "Quantity",
-                table: "CartItems");
+            //migrationBuilder.DropColumn(
+            //    name: "Quantity",
+            //    table: "CartItems");
 
             migrationBuilder.CreateTable(
                 name: "WishlistItem",
