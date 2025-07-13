@@ -14,14 +14,18 @@ namespace Orpheus
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("OrpheusDbConnection") 
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
             builder.Services.AddDbContext<OrpheusDbContext>(options =>
                 options.UseSqlServer(connectionString));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<OrpheusAppUser>
                 (options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<OrpheusDbContext>();
+
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 
