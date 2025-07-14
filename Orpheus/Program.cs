@@ -22,6 +22,7 @@ namespace Orpheus
 
             builder.Services.AddDefaultIdentity<OrpheusAppUser>
                 (options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<OrpheusDbContext>();
 
             builder.Services.AddControllersWithViews();
@@ -52,6 +53,7 @@ namespace Orpheus
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
             app.MapRazorPages();
 
             app.Run();
