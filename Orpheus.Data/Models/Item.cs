@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Orpheus.Data.Models.Enums;
 using static Orpheus.Common.EntityClassesValidation.Item;
 namespace Orpheus.Data.Models
 {
@@ -24,6 +25,8 @@ namespace Orpheus.Data.Models
         [ForeignKey(nameof(Brand))]
         public Guid BrandId { get; set; }
         public Brand Brand { get; set; } = null!;
+        [Required]
+        public ItemType ItemType { get; set; }
         public ICollection<ItemImage> Images { get; set; } 
             = new List<ItemImage>();
         public ICollection<Review> Reviews { get; set; }
