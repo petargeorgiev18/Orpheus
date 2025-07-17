@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250717172142_SeedInitialDataMigration")]
+    partial class SeedInitialDataMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,11 +314,16 @@ namespace Orpheus.Data.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<Guid?>("WishlistId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("WishlistId");
 
                     b.ToTable("Items");
 
@@ -666,6 +674,10 @@ namespace Orpheus.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Orpheus.Data.Models.Wishlist", null)
+                        .WithMany("Items")
+                        .HasForeignKey("WishlistId");
+
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
@@ -805,6 +817,8 @@ namespace Orpheus.Data.Migrations
 
             modelBuilder.Entity("Orpheus.Data.Models.Wishlist", b =>
                 {
+                    b.Navigation("Items");
+
                     b.Navigation("WishlistsItems");
                 });
 #pragma warning restore 612, 618

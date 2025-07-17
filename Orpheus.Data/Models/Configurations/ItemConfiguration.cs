@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Orpheus.Data.Models.Enums;
 
 namespace Orpheus.Data.Models.Configurations
 {
@@ -12,7 +13,7 @@ namespace Orpheus.Data.Models.Configurations
     {
         public void Configure(EntityTypeBuilder<Item> builder)
         {
-            //builder.HasData(CreateItems());
+            builder.HasData(CreateItems());
         }
         public IEnumerable<Item> CreateItems()
         {
@@ -20,18 +21,13 @@ namespace Orpheus.Data.Models.Configurations
             {
                 new Item
                 {
-                    Id = Guid.NewGuid(),
-                    Brand = new Brand
-                    {
-                        Id = Guid.NewGuid(),
-                        Name = "ESP LTD",
-                        Description = "A leading brand in musical instruments."
-                    },
+                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
                     Name = "ESP LTD EC-256",
-                    Description = "This is a sample item description.",
-                    Price = 19.99m,
-                    CategoryId = Guid.NewGuid(),
-                    BrandId = Guid.NewGuid(),
+                    Description = "This is a sample electric guitar.",
+                    Price = 499.99m,
+                    CategoryId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    BrandId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                    ItemType = ItemType.Instrument,
                     IsAvailable = true
                 }
             };
