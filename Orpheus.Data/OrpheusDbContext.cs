@@ -32,6 +32,7 @@ namespace Orpheus.Data
             builder.ApplyConfiguration(new CategoryConfiguration());
             builder.ApplyConfiguration(new BrandConfiguration());
             builder.ApplyConfiguration(new ItemConfiguration());
+            builder.ApplyConfiguration(new ItemImagesConfiguration());
         }
     }
 }

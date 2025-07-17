@@ -352,6 +352,20 @@ namespace Orpheus.Data.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("Images");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
+                            ItemId = new Guid("44444444-4444-4444-4444-444444444444"),
+                            Url = "https://muzikercdn.com/uploads/products/19437/1943741/main_260b9357.jpg"
+                        },
+                        new
+                        {
+                            Id = new Guid("66666666-6666-6666-6666-666666666666"),
+                            ItemId = new Guid("44444444-4444-4444-4444-444444444444"),
+                            Url = "https://muzikercdn.com/uploads/product_gallery/19437/1943742/main_9bea70a7.jpg"
+                        });
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Order", b =>
