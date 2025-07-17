@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Orpheus.Core.Interfaces;
 using Orpheus.Data;
 using Orpheus.Data.Models;
+using Orpheus.Data.Repository.Interfaces;
+using Orpheus.Data.Repository;
+using Orpheus.Core.Implementations;
 
 namespace Orpheus
 {
@@ -27,6 +31,9 @@ namespace Orpheus
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
+            builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+            builder.Services.AddScoped<IInstrumentItemService, InstrumentItemService>();
 
             var app = builder.Build();
 

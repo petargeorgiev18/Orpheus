@@ -12,7 +12,7 @@ namespace Orpheus.Data.Models.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            throw new NotImplementedException();
+            builder.HasData(CreateCategories());
         }
         public IEnumerable<Category> CreateCategories()
         {
@@ -20,23 +20,18 @@ namespace Orpheus.Data.Models.Configurations
             {
                 new Category
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                     CategoryName = "Guitars"
                 },
                 new Category
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
                     CategoryName = "Drums"
                 },
                 new Category
                 {
-                    Id = Guid.NewGuid(),
+                    Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
                     CategoryName = "Keyboards"
-                },
-                new Category
-                {
-                    Id = Guid.NewGuid(),
-                    CategoryName = "Accessories"
                 }
             };
         }
