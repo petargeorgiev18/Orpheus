@@ -27,5 +27,14 @@ namespace Orpheus.Controllers
             });
             return View(viewModel);
         }
+        public async Task<IActionResult> Details(Guid id)
+        {
+            // Load the instrument by id, then return the details view
+            var instrument = await instrumentItemService.GetByIdAsync(id);
+            if (instrument == null)
+                return NotFound();
+
+            return View(instrument);
+        }
     }
 }
