@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Instruments";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-center text-primary">🎸 Browse Our Instruments</h2>
+
+    <!-- Filter Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4 rounded">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="#">Filter</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#filterNavbar"
+                    aria-controls="filterNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="filterNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <!-- Type Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="typeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Type
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="typeDropdown">
+                            <li><a class="dropdown-item" href="?type=Guitar">Guitars</a></li>
+                            <li><a class="dropdown-item" href="?type=Drums">Drums</a></li>
+                            <li><a class="dropdown-item" href="?type=Keyboard">Keyboards</a></li>
+                            <li><a class="dropdown-item" href="?type=Other">Other</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Brand Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Brand
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="brandDropdown">
+                            <li><a class="dropdown-item" href="?brand=Yamaha">Yamaha</a></li>
+                            <li><a class="dropdown-item" href="?brand=Fender">Fender</a></li>
+                            <li><a class="dropdown-item" href="?brand=Gibson">Gibson</a></li>
+                            <li><a class="dropdown-item" href="?brand=Other">Other</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Price Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="priceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Price
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="priceDropdown">
+                            <li><a class="dropdown-item" href="?price=low">Under 200 BGN</a></li>
+                            <li><a class="dropdown-item" href="?price=mid">200 - 1000 BGN</a></li>
+                            <li><a class="dropdown-item" href="?price=high">1000+ BGN</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Placeholder for Instruments -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <p class="text-muted">[ Instruments will be listed here... ]</p>
+        </div>
+    </div>
+</div>
