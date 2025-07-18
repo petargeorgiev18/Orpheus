@@ -11,10 +11,10 @@ using Orpheus.Data.Repository.Interfaces;
 
 namespace Orpheus.Core.Implementations
 {
-    public class InstrumentItemService : IInstrumentItemService
+    public class InstrumentService : IInstrumentService
     {
         private readonly IRepository<Item, Guid> itemRepo;
-        public InstrumentItemService(IRepository<Item, Guid> itemRepo)
+        public InstrumentService(IRepository<Item, Guid> itemRepo)
         {
             this.itemRepo = itemRepo;
         }
@@ -29,7 +29,10 @@ namespace Orpheus.Core.Implementations
         }
         public async Task<Item?> GetByIdAsync(Guid id)
         {
-            return await itemRepo.GetByIdAsync(id);
+            return await itemRepo.GetAllAsNoTracking()
+                    .Include(i => i.Images)
+                    .Include(i => i.Brand)
+                    .FirstOrDefaultAsync(i => i.Id == id);
         }
     }
 }

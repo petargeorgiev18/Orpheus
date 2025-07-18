@@ -29,6 +29,17 @@ namespace Orpheus.Data.Models.Configurations
                     BrandId = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                     ItemType = ItemType.Instrument,
                     IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    Name = "Gibson Les Paul Standard",
+                    Description = "Classic Gibson Les Paul electric guitar with mahogany body, maple top, and humbucker pickups, perfect for rock and blues.",
+                    Price = 1499.99m,
+                    CategoryId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    BrandId = Guid.Parse("33333333-3333-3333-3333-333333333333"),
+                    ItemType = ItemType.Instrument,
+                    IsAvailable = true
                 }
             };
         }
