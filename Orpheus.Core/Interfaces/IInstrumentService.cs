@@ -7,7 +7,7 @@ using Orpheus.Data.Models;
 
 namespace Orpheus.Core.Interfaces
 {
-    public interface IInstrumentItemService
+    public interface IInstrumentService
     {
         Task<IEnumerable<Item>> GetAvailableInstrumentsAsync();
         Task<Item?> GetByIdAsync(Guid id);

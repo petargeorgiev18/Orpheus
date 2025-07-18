@@ -2,7 +2,7 @@
 {
     public class InstrumentAllViewModel
     {
-        public IEnumerable<InstrumentItemViewModel> Instruments { get; set; } = new List<InstrumentItemViewModel>();
+        public IEnumerable<InstrumentViewModel> Instruments { get; set; } = new List<InstrumentViewModel>();
         public string? Type { get; set; }
         public string? Brand { get; set; }
         public string? PriceRange { get; set; }

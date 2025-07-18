@@ -33,7 +33,7 @@ namespace Orpheus
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-            builder.Services.AddScoped<IInstrumentItemService, InstrumentItemService>();
+            builder.Services.AddScoped<IInstrumentService, InstrumentService>();
 
             var app = builder.Build();
 
