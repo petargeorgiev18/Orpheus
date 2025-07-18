@@ -34,5 +34,15 @@ namespace Orpheus.Core.Implementations
                     .Include(i => i.Brand)
                     .FirstOrDefaultAsync(i => i.Id == id);
         }
+        public async Task<IEnumerable<Item>> GetFeaturedInstrumentsAsync(int count)
+        {
+            return await itemRepo
+                .GetAllAsNoTracking()
+                .Where(i => i.ItemType == ItemType.Instrument && i.IsAvailable)
+                .Include(i => i.Images)
+                .Include(i => i.Brand)
+                .Take(count)
+                .ToListAsync();
+        }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250718162257_SeedingCategoriesBrandsAndAlbumsMigration")]
+    partial class SeedingCategoriesBrandsAndAlbumsMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -445,24 +448,6 @@ namespace Orpheus.Data.Migrations
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
                             ItemId = new Guid("44444444-4444-4444-4444-444444444444"),
                             Url = "https://muzikercdn.com/uploads/product_gallery/19437/1943742/main_9bea70a7.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("77777777-7777-7777-7777-777777777777"),
-                            ItemId = new Guid("66666666-6666-6666-6666-666666666666"),
-                            Url = "/images/albums/bornthisway.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("88888888-8888-8888-8888-888888888888"),
-                            ItemId = new Guid("77777777-7777-7777-7777-777777777777"),
-                            Url = "/images/albums/masterofpuppets.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            ItemId = new Guid("88888888-8888-8888-8888-888888888888"),
-                            Url = "/images/albums/thedarksideofthemoon.jpg"
                         });
                 });
 

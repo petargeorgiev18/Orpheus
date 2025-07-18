@@ -29,11 +29,18 @@ namespace Orpheus
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<OrpheusDbContext>();
 
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+            });
+
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             builder.Services.AddScoped<IInstrumentService, InstrumentService>();
+            builder.Services.AddScoped<IWishlistService, WishlistService>();
 
             var app = builder.Build();
 

@@ -11,5 +11,6 @@ namespace Orpheus.Core.Interfaces
     {
         Task<IEnumerable<Item>> GetAvailableInstrumentsAsync();
         Task<Item?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Item>> GetFeaturedInstrumentsAsync(int count);
     }
 }
