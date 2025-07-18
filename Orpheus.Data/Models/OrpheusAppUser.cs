@@ -11,15 +11,12 @@ namespace Orpheus.Data.Models
         }        
         [MaxLength(StreetMaxLength)]
         public string? Street { get; set; }
-        [Required]
         [MaxLength(CityMaxLength)]
-        public string City { get; set; } = null!;
-        [Required]
+        public string? City { get; set; }
         [MaxLength(CountryMaxLength)]
-        public string Country { get; set; } = null!;
-        [Required]
+        public string? Country { get; set; } = null!;
         [MaxLength(ZipCodeMaxLength)]
-        public string ZipCode { get; set; } = null!;
+        public string? ZipCode { get; set; } = null!;
         public Cart? Cart { get; set; } = null!;
         public Wishlist? Wishlist { get; set; } = null!;
         public ICollection<Order> Orders { get; set; }
