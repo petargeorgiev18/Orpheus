@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Orpheus.Core.Implementations;
 using Orpheus.Core.Interfaces;
 using Orpheus.Data.Models.Enums;
@@ -14,6 +15,7 @@ namespace Orpheus.Controllers
         {
             this.instrumentItemService = instrumentItemService;
         }
+        [HttpGet]   
         public async Task<IActionResult> All()
         {
             var instruments = await instrumentItemService.GetAvailableInstrumentsAsync();
@@ -29,6 +31,7 @@ namespace Orpheus.Controllers
             });
             return View(viewModel);
         }
+        [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
             var item = await instrumentItemService.GetByIdAsync(id);

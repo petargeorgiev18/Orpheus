@@ -38,6 +38,27 @@ namespace Orpheus.Data.Models.Configurations
                     Name = "Gibson",
                     Description = "Gibson is an American manufacturer of guitars, other musical instruments, and accessories.",
                     LogoUrl = "https://example.com/gibson-logo.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("88888888-8888-8888-8888-888888888888"),
+                    Name = "Elektra Records",
+                    Description = "Record label for Metallica's albums including 'Master of Puppets'",
+                    LogoUrl = "/images/brands/elektra_records.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                    Name = "Island Records",
+                    Description = "Label for Lady Gaga's 'Born This Way'",
+                    LogoUrl = "/images/brands/island_records.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Name = "Harvest Records",
+                    Description = "Label for Pink Floyd's 'The Dark Side of the Moon'",
+                    LogoUrl = "/images/brands/harvest_records.jpg"
                 }
             };
         }

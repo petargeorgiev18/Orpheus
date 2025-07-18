@@ -32,6 +32,21 @@ namespace Orpheus.Data.Models.Configurations
                 {
                     Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
                     CategoryName = "Keyboards"
+                },
+                new Category
+                {
+                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    CategoryName = "Albums"
+                },
+                new Category
+                {
+                    Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                    CategoryName = "Merch"
+                },
+                new Category
+                {
+                    Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                    CategoryName = "Accessories"
                 }
             };
         }

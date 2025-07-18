@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Orpheus.Core.Interfaces;
 using Orpheus.Models;
+using Orpheus.ViewModels;
 using System.Diagnostics;
 
 namespace Orpheus.Controllers
@@ -7,17 +9,31 @@ namespace Orpheus.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IInstrumentService instrumentService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IInstrumentService instrumentService)
         {
             _logger = logger;
+            this.instrumentService = instrumentService;
         }
-
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var featuredInstruments = await instrumentService.GetFeaturedInstrumentsAsync(3);
+            var viewModels = featuredInstruments.Select(i => new InstrumentViewModel
+            {
+                Id = i.Id,
+                Name = i.Name,
+                BrandName = i.Brand.Name,
+                Description = i.Description,
+                Price = i.Price,
+                Images = i.Images.Select(img => img.Url).ToList()
+            });
+            return View(viewModels);
         }
-
+        [HttpGet]
         public IActionResult Privacy()
         {
             return View();

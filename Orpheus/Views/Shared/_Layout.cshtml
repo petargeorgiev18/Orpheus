@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Orpheus.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
             <div class="container">
@@ -31,21 +31,21 @@
                     </ul>
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item"><a class="nav-link" href="/Wishlist">Wishlist</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/Cart">Cart</a></li>                 
+                        <li class="nav-item"><a class="nav-link" href="/Cart">Cart</a></li>
                     </ul>
-                    <partial name ="_LoginPartial" />
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container flex-grow-1">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="bg-dark text-white mt-5">
+    <footer class="bg-dark text-white mt-auto">
         <div class="container py-4">
             <div class="row">
                 <div class="col-md-4 mb-3">
@@ -55,7 +55,7 @@
                 <div class="col-md-4 mb-3">
                     <h5>Quick Links</h5>
                     <ul class="list-unstyled">
-                        <li><a class="text-white" href="/Instruments">Instruments</a></li>
+                        <li><a class="text-white" href="/Instruments/All">Instruments</a></li>
                         <li><a class="text-white" href="/Albums">Albums</a></li>
                         <li><a class="text-white" href="/Accessories">Accessories</a></li>
                         <li><a class="text-white" href="/Merch">Band Merch</a></li>

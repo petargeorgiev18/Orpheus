@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Orpheus.ViewModels.InstrumentViewModel>
+
+@{
     ViewData["Title"] = "Home";
 }
 
@@ -20,7 +22,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Instruments</h5>
                     <p>Guitars, keyboards, drums</p>
-                    <a href="#" class="btn btn-light btn-sm">Browse</a>
+                    <a href="/Instruments/All" class="btn btn-light btn-sm">Browse</a>
                 </div>
             </div>
         </div>
@@ -60,27 +62,19 @@
 
     <h2 class="section-title text-center mb-4">🔥 Featured Instruments</h2>
     <div class="row">
-        <div class="col-md-3 col-sm-6 mb-4">
-            <div class="card product-card h-100">
-                <img src="https://via.placeholder.com/300x180?text=Electric+Guitar" class="card-img-top" alt="Electric Guitar">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Electric Guitar</h5>
-                    <p class="text-muted">$399.99</p>
-                    <a href="#" class="btn btn-outline-primary btn-sm">Details</a>
+        @foreach (var instrument in Model)
+        {
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="card product-card h-100">
+                    <img src="@(instrument.Images.FirstOrDefault() ?? "/images/default-image.png")" class="card-img-top" alt="@instrument.Name" />
+                    <div class="card-body text-center">
+                        <h5 class="card-title">@instrument.Name</h5>
+                        <p class="text-muted">@instrument.Price.ToString("C")</p>
+                        <a href="/Instruments/Details/@instrument.Id" class="btn btn-outline-primary btn-sm">Details</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-4">
-            <div class="card product-card h-100">
-                <img src="https://via.placeholder.com/300x180?text=MIDI+Keyboard" class="card-img-top" alt="MIDI Keyboard">
-                <div class="card-body text-center">
-                    <h5 class="card-title">MIDI Keyboard</h5>
-                    <p class="text-muted">$149.99</p>
-                    <a href="#" class="btn btn-outline-primary btn-sm">Details</a>
-                </div>
-            </div>
-        </div>
-        <!-- Add more products similarly -->
+        }
     </div>
 
     <hr class="my-5">
