@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250720122235_AdddedQuantityPropToCartItemMigration")]
+    partial class AdddedQuantityPropToCartItemMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -670,9 +673,6 @@ namespace Orpheus.Data.Migrations
 
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
 
                     b.Property<Guid>("WishlistId")
                         .HasColumnType("uniqueidentifier");

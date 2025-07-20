@@ -69,10 +69,12 @@
 
 				@if (User.Identity?.IsAuthenticated ?? false)
 				{
-					<a asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Id" class="btn btn-success me-2">
-						Add to Cart
-					</a>
-
+					<form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Id" method="post" class="d-inline">
+						@Html.AntiForgeryToken()
+						<button type="submit" class="btn btn-success me-2">
+							Add to Cart
+						</button>
+					</form>
 					<form action="@addToWishlistUrl" method="post" class="d-inline">
 						@Html.AntiForgeryToken()
 						<button type="submit" class="btn btn-outline-primary">
