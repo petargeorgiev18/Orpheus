@@ -20,16 +20,18 @@ namespace Orpheus.Core.Implementations
         }
         public async Task<IEnumerable<Item>> GetAvailableInstrumentsAsync()
         {
-            return await itemRepo                
+            return await itemRepo
                 .GetAllAsNoTracking()
                 .Where(i => i.ItemType == ItemType.Instrument && i.IsAvailable)
-                .Include(i=>i.Images)
+                .Include(i => i.Category)
+                .Include(i => i.Images)
                 .Include(i => i.Brand)
                 .ToListAsync();
         }
         public async Task<Item?> GetByIdAsync(Guid id)
         {
             return await itemRepo.GetAllAsNoTracking()
+                    .Include(i => i.Category)
                     .Include(i => i.Images)
                     .Include(i => i.Brand)
                     .FirstOrDefaultAsync(i => i.Id == id);
@@ -39,6 +41,7 @@ namespace Orpheus.Core.Implementations
             return await itemRepo
                 .GetAllAsNoTracking()
                 .Where(i => i.ItemType == ItemType.Instrument && i.IsAvailable)
+                .Include(i => i.Category)
                 .Include(i => i.Images)
                 .Include(i => i.Brand)
                 .Take(count)
