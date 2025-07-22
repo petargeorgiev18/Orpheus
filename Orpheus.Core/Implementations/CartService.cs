@@ -15,19 +15,79 @@ namespace Orpheus.Core.Implementations
     {
         private readonly IRepository<CartItem, Guid> cartRepo;
         private readonly IRepository<Cart, Guid> cartRepository;
-        public CartService(IRepository<CartItem, Guid> cartRepo, IRepository<Cart, Guid> cartRepository)
+        private readonly IRepository<Item, Guid> itemRepository;
+        public CartService(IRepository<CartItem, Guid> cartRepo, IRepository<Cart, Guid> cartRepository, IRepository<Item, Guid> itemRepository)
         {
             this.cartRepo = cartRepo;
             this.cartRepository = cartRepository;
+            this.itemRepository = itemRepository;
         }
-        public Task AddToCartAsync(Guid itemId, string userId)
+        public async Task AddToCartAsync(Guid itemId, Guid userId)
         {
-            throw new NotImplementedException();
+            var item = await itemRepository
+                .GetAllAsNoTracking()
+                .FirstOrDefaultAsync(i => i.Id == itemId && i.IsAvailable == true);
+
+            if (item == null)
+            {
+                throw new InvalidOperationException("Item not found at all.");
+            }
+
+            var cart = await cartRepository
+                .GetAllTracked()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null)
+            {
+                cart = new Cart
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId
+                };
+                await cartRepository.AddAsync(cart);
+            }
+
+            var existingItem = await cartRepo
+                .GetAllTracked()
+                .FirstOrDefaultAsync(ci => ci.CartId == cart.Id && ci.ItemId == itemId);
+
+            if (existingItem != null)
+            {
+                existingItem.Quantity++;
+                await cartRepo.UpdateAsync(existingItem);
+            }
+            else
+            {
+                var newItem = new CartItem
+                {
+                    Id = Guid.NewGuid(),
+                    CartId = cart.Id,
+                    ItemId = itemId,
+                    Quantity = 1
+                };
+                await cartRepo.AddAsync(newItem);
+            }
         }
 
-        public Task ClearCartAsync(string userId)
+
+        public async Task ClearCartAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            var cart = await cartRepository
+                            .GetAllTracked()
+                            .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart != null)
+            {
+                var cartItems = await cartRepo
+                    .GetAllTracked()
+                    .Where(ci => ci.CartId == cart.Id)
+                    .ToListAsync();
+
+                foreach (var item in cartItems)
+                {
+                    await cartRepo.DeleteAsync(item.Id);
+                }
+            }
         }
 
         public async Task<List<CartItemDto>> GetCartItemsAsync(Guid userId)
@@ -52,9 +112,32 @@ namespace Orpheus.Core.Implementations
                 .ToList();
         }
 
-        public Task RemoveFromCartAsync(Guid cartItemId, string userId)
+        public async Task RemoveFromCartAsync(Guid cartItemId, Guid userId)
         {
-            throw new NotImplementedException();
+            var cartItem = await cartRepo
+                            .GetAllTracked()
+                            .Include(ci => ci.Cart)
+                            .FirstOrDefaultAsync(ci => ci.Id == cartItemId && ci.Cart.UserId == userId);
+
+            if (cartItem != null)
+            {
+                await cartRepo.DeleteAsync(cartItem.Id);
+            }
         }
+
+        public async Task UpdateQuantityAsync(Guid cartItemId, int quantity, Guid userId)
+        {
+            var cartItem = await cartRepo.GetAllTracked() // Use cartRepo here
+                .Include(ci => ci.Cart) // Include Cart navigation to check ownership
+                .FirstOrDefaultAsync(ci => ci.Id == cartItemId);
+
+            if (cartItem == null || cartItem.Cart.UserId != userId)
+                throw new Exception("Cart item not found or access denied.");
+
+            cartItem.Quantity = quantity;
+
+            await cartRepo.UpdateAsync(cartItem); // Use cartRepo here to update
+        }
+
     }
 }

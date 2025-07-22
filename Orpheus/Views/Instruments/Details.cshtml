@@ -1,88 +1,84 @@
 ﻿@model Orpheus.ViewModels.InstrumentViewModel
 
 @{
-	ViewData["Title"] = Model.Name;
-	var addToWishlistUrl = Url.Action("AddToWishlist", "Wishlist", new { id = Model.Id });
+    ViewData["Title"] = Model.Name;
+    var addToWishlistUrl = Url.Action("AddToWishlist", "Wishlist", new { id = Model.Id });
 }
 
 <div class="container mt-4">
-	<div class="row">
-		<!-- Images -->
-		<div class="col-md-6">
-			@if (Model.Images != null && Model.Images.Any())
-			{
-				<!-- Main carousel -->
-				<div id="imageCarousel" class="carousel slide">
-					<div class="carousel-inner rounded shadow">
-						@for (int i = 0; i < Model.Images.Count; i++)
-						{
-							<div class="carousel-item @(i == 0 ? "active" : "")">
-								<img src="@Model.Images[i]" alt="@Model.Name" class="d-block w-100" style="max-height: 400px; object-fit: contain;" />
-							</div>
-						}
-					</div>
+    <div class="row">
+        <!-- Images -->
+        <div class="col-md-6">
+            @if (Model.Images != null && Model.Images.Any())
+            {
+                <!-- Carousel -->
+                <div id="imageCarousel" class="carousel slide">
+                    <div class="carousel-inner rounded shadow">
+                        @for (int i = 0; i < Model.Images.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Model.Images[i]" alt="@Model.Name" class="d-block w-100" style="max-height: 400px; object-fit: contain;" />
+                            </div>
+                        }
+                    </div>
 
-					@if (Model.Images.Count > 1)
-					{
-						<button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Previous</span>
-						</button>
-						<button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
-							<span class="visually-hidden">Next</span>
-						</button>
-					}
-				</div>
+                    @if (Model.Images.Count > 1)
+                    {
+                        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    }
+                </div>
 
-				<!-- Thumbnails -->
-				<div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
-					@for (int i = 0; i < Model.Images.Count; i++)
-					{
-						<img src="@Model.Images[i]"
-							 class="img-thumbnail"
-							 style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-							 data-bs-target="#imageCarousel"
-							 data-bs-slide-to="@i"
-						@(i == 0 ? "aria-current=\"true\"" : "") />
-					}
-				</div>
-			}
-			else
-			{
-				<img src="/images/default-image.png" alt="No image available" class="img-fluid rounded shadow" />
-			}
-		</div>
+                <!-- Thumbnails -->
+                <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
+                    @for (int i = 0; i < Model.Images.Count; i++)
+                    {
+                        <img src="@Model.Images[i]"
+                             class="img-thumbnail"
+                             style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                             data-bs-target="#imageCarousel"
+                             data-bs-slide-to="@i"
+                        @(i == 0 ? "aria-current=\"true\"" : "") />
+                    }
+                </div>
+            }
+            else
+            {
+                <img src="/images/default-image.png" alt="No image available" class="img-fluid rounded shadow" />
+            }
+        </div>
 
-		<!-- Details -->
-		<div class="col-md-6">
-			<h1>@Model.Name</h1>
-			<h4 class="text-muted">@Model.BrandName</h4>
-			<p>@Model.Description</p>
+        <!-- Details -->
+        <div class="col-md-6">
+            <h1>@Model.Name</h1>
+            <h4 class="text-muted">@Model.BrandName</h4>
+            <p>@Model.Description</p>
 
-			<h3 class="text-primary">Price: @Model.Price.ToString("F2") BGN</h3>
+            <h3 class="text-primary">Price: @Model.Price.ToString("F2") BGN</h3>
 
-			<div class="mt-4">
-				<a asp-action="All" asp-controller="Instruments" class="btn btn-secondary me-2">
-					← Back to list
-				</a>
+            <div class="mt-4">
+                <a asp-action="All" asp-controller="Instruments" class="btn btn-secondary me-2">
+                    ← Back to list
+                </a>
 
-				@if (User.Identity?.IsAuthenticated ?? false)
-				{
-					<form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Id" method="post" class="d-inline">
-						@Html.AntiForgeryToken()
-						<button type="submit" class="btn btn-success me-2">
-							Add to Cart
-						</button>
-					</form>
-					<form action="@addToWishlistUrl" method="post" class="d-inline">
-						@Html.AntiForgeryToken()
-						<button type="submit" class="btn btn-outline-primary">
-							Add to Favorites
-						</button>
-					</form>
-				}
-			</div>
-		</div>
-	</div>
+                @if (User.Identity?.IsAuthenticated ?? false)
+                {
+                    <form asp-action="AddToCart" asp-controller="Cart" asp-route-itemId="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success me-2">Add to Cart</button>
+                    </form>
+                    <form action="@addToWishlistUrl" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-primary">Add to Favorites</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
 </div>

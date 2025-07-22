@@ -42,6 +42,8 @@ namespace Orpheus
             builder.Services.AddScoped<IInstrumentService, InstrumentService>();
             builder.Services.AddScoped<IWishlistService, WishlistService>();
             builder.Services.AddScoped<ICartService, CartService>();
+            builder.Services.AddScoped<IAlbumService, AlbumService>();
+            builder.Services.AddScoped<IItemService, ItemService>();
 
             var app = builder.Build();
 

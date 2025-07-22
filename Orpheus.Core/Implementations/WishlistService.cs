@@ -2,10 +2,6 @@
 using Orpheus.Core.Interfaces;
 using Orpheus.Data.Models;
 using Orpheus.Data.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Orpheus.Core.Implementations
 {

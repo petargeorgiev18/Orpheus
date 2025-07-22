@@ -1,21 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Orpheus.Core.Implementations;
 using Orpheus.Core.Interfaces;
 using Orpheus.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.Linq;
-using System.Threading.Tasks;
-using Orpheus.Extensions;
 
 namespace Orpheus.Controllers
 {
     public class WishlistController : Controller
     {
         private readonly IWishlistService wishlistService;
+        private readonly ICartService cartService;
 
-        public WishlistController(IWishlistService wishlistService)
+        public WishlistController(IWishlistService wishlistService, ICartService cartService)
         {
             this.wishlistService = wishlistService;
+            this.cartService = cartService;
         }
 
         [HttpGet]
@@ -62,5 +61,25 @@ namespace Orpheus.Controllers
             await wishlistService.RemoveFromWishlistAsync(userId, id);
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMultipleToCart()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized();
+
+            var userGuid = Guid.Parse(userId);
+
+            var wishlistItems = await wishlistService.GetWishlistItemsAsync(userId);
+
+            foreach (var item in wishlistItems)
+            {
+                await cartService.AddToCartAsync(item.Id, userGuid);
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
