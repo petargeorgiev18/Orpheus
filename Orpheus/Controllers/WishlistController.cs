@@ -1,11 +1,12 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Orpheus.Core.Implementations;
 using Orpheus.Core.Interfaces;
 using Orpheus.ViewModels;
 
 namespace Orpheus.Controllers
 {
+    [Authorize]
     public class WishlistController : Controller
     {
         private readonly IWishlistService wishlistService;

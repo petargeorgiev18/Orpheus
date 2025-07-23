@@ -1,13 +1,12 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Orpheus.Core.Interfaces;
-using Orpheus.Data.Models;
-using Orpheus.Data.Repository.Interfaces;
 using Orpheus.ViewModels;
 
 namespace Orpheus.Controllers
 {
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartService cartService;
