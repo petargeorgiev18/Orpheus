@@ -73,8 +73,28 @@ namespace Orpheus.Data.Models.Configurations
                     Name = "Boss",
                     Description = "Boss is a famous brand known for guitar pedals and tuners.",
                     LogoUrl = "https://example.com/boss-logo.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Name = "Rammstein",
+                    Description = "Official merchandise brand of the German industrial metal band Rammstein.",
+                    LogoUrl = "/images/brands/rammstein.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    Name = "Slayer",
+                    Description = "Legendary thrash metal band known for aggressive sound and dark imagery.",
+                    LogoUrl = "/images/brands/slayer.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("ccccccc3-cccc-cccc-cccc-cccccccccccc"),
+                    Name = "Metallica",
+                    Description = "Official Metallica merchandise and albums, including 'Master of Puppets'.",
+                    LogoUrl = "/images/brands/metallica.png"
                 }
-
             };
         }
     }

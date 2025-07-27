@@ -56,7 +56,7 @@ namespace Orpheus.Data.Models.Configurations
                 },
                 new ItemImage
                 {
-                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111\r\n"),
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
                     Url = "https://m.media-amazon.com/images/I/61KduVSVYlL._SX425_.jpg",
                     ItemId = Guid.Parse("66666666-6666-6666-6666-666666666666"),
                     IsMain = false
@@ -81,7 +81,43 @@ namespace Orpheus.Data.Models.Configurations
                     Url = "https://m.media-amazon.com/images/I/61Rx712UAbL._UF894,1000_QL80_.jpg",
                     ItemId = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
                     IsMain = true
+                },
+                new ItemImage
+                {
+                    Id = Guid.Parse("ccccccc1-cccc-cccc-cccc-cccccccccccc"),
+                    Url = "https://www.emp.ie/dw/image/v2/BBQV_PRD/on/demandware.static/-/Sites-master-emp/default/dwa9ad3e79/images/1/0/5/8/105863a.jpg?sfrm=png",
+                    ItemId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0001"), // ✅ fixed
+                    IsMain = true
+                },
+                new ItemImage
+                {
+                    Id = Guid.Parse("ccccccc2-cccc-cccc-cccc-cccccccccccc"),
+                    Url = "https://www.emp.ie/dw/image/v2/BBQV_PRD/on/demandware.static/-/Sites-master-emp/default/dwe630cd96/images/1/0/5/8/105863b.jpg?sfrm=png",
+                    ItemId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0001"),
+                    IsMain = false
+                },
+                new ItemImage
+                {
+                    Id = Guid.Parse("ccccccc3-cccc-cccc-cccc-cccccccccccc"),
+                    Url = "https://muzikercdn.com/uploads/products/3972/397246/thumb_large_d_gallery_base_dc6883f7.jpg",
+                    ItemId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0002"), // ✅ fixed
+                    IsMain = true
+                },
+                new ItemImage
+                {
+                    Id = Guid.Parse("ccccccc4-cccc-cccc-cccc-cccccccccccc"),
+                    Url = "https://muzikercdn.com/uploads/product_gallery/3972/397247/main_692dc8f6.jpg",
+                    ItemId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0002"),
+                    IsMain = false
+                },
+                new ItemImage
+                {
+                    Id = Guid.Parse("ccccccc5-cccc-cccc-cccc-cccccccccccc"),
+                    Url = "https://i.ebayimg.com/00/s/MTUzN1gxNjAw/z/RFMAAOSwntxiBu1x/$_57.JPG?set_id=8800005007",
+                    ItemId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0003"), // ✅ fixed
+                    IsMain = true
                 }
+
             };
 
         }
