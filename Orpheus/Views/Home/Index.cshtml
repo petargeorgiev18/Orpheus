@@ -1,9 +1,8 @@
-﻿@model IEnumerable<Orpheus.ViewModels.InstrumentViewModel>
+﻿@model Orpheus.ViewModels.HomeViewModel
 
 @{
     ViewData["Title"] = "Home";
 }
-
 
 <div class="p-5 mb-4 rounded-3 hero-section text-white">
     <div class="container py-5">
@@ -42,7 +41,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Accessories</h5>
                     <p>Strings, stands, picks</p>
-                    <a href="#" class="btn btn-light btn-sm">Browse</a>
+                    <a href="/Accessories" class="btn btn-light btn-sm">Browse</a>
                 </div>
             </div>
         </div>
@@ -52,7 +51,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Band Merch</h5>
                     <p>Shirts, caps, posters</p>
-                    <a href="#" class="btn btn-dark btn-sm">Browse</a>
+                    <a href="/Merch" class="btn btn-dark btn-sm">Browse</a>
                 </div>
             </div>
         </div>
@@ -62,11 +61,11 @@
 
     <h2 class="section-title text-center mb-4">🔥 Featured Instruments</h2>
     <div class="row">
-        @foreach (var instrument in Model)
+        @foreach (var instrument in Model.FeaturedInstruments)
         {
             <div class="col-md-3 col-sm-6 mb-4">
                 <div class="card product-card h-100">
-                    <img src="@(instrument.Images.FirstOrDefault() ?? "/images/default-image.png")" class="card-img-top" alt="@instrument.Name" />
+                    <img src="@(instrument.ImageUrl ?? "/images/default-image.png")" class="card-img-top" alt="@instrument.Name" />
                     <div class="card-body text-center">
                         <h5 class="card-title">@instrument.Name</h5>
                         <p class="text-muted">@instrument.Price.ToString("C")</p>
@@ -80,47 +79,19 @@
     <hr class="my-5">
 
     <h2 class="section-title text-center mb-4">🎧 New Albums</h2>
-    <div id="albumCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 text-center">
-                            <img src="~/images/eoc.jpg" class="card-img-top" alt="Album 1">
-                            <div class="card-body">
-                                <h5 class="card-title">Echoes of Silence</h5>
-                                <p class="text-muted">The Weeknd</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 text-center">
-                            <img src="~/images/tdsodm.jpg" class="card-img-top" alt="Album 2">
-                            <div class="card-body">
-                                <h5 class="card-title">The Dark Side</h5>
-                                <p class="text-muted">Pink Floyd</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 text-center">
-                            <img src="~/images/bib.jpg" class="card-img-top" alt="Album 3">
-                            <div class="card-body">
-                                <h5 class="card-title">Back in Black</h5>
-                                <p class="text-muted">AC/DC</p>
-                            </div>
-                        </div>
+    <div class="row">
+        @foreach (var album in Model.FeaturedAlbums)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 text-center">
+                    <img src="@(album.ImageUrl ?? "/images/default-image.png")" class="card-img-top" alt="@album.Name" />
+                    <div class="card-body">
+                        <h5 class="card-title">@album.Name</h5>
+                        <p class="text-muted">@album.BrandName</p>
+                        <a href="/Albums/Details/@album.Id" class="btn btn-outline-primary btn-sm">Details</a>
                     </div>
                 </div>
             </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#albumCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#albumCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
+        }
     </div>
 </div>

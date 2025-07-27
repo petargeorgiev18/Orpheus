@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250727150449_AddedIsMainPropToItemImagesEntityMigration")]
+    partial class AddedIsMainPropToItemImagesEntityMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,20 +227,6 @@ namespace Orpheus.Data.Migrations
                             Description = "Label for Pink Floyd's 'The Dark Side of the Moon'",
                             LogoUrl = "/images/brands/harvest_records.jpg",
                             Name = "Harvest Records"
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            Description = "Dunlop is a leading brand for guitar picks, capos, strings, and other accessories.",
-                            LogoUrl = "https://example.com/dunlop-logo.png",
-                            Name = "Dunlop"
-                        },
-                        new
-                        {
-                            Id = new Guid("55555555-5555-5555-5555-555555555555"),
-                            Description = "Boss is a famous brand known for guitar pedals and tuners.",
-                            LogoUrl = "https://example.com/boss-logo.png",
-                            Name = "Boss"
                         });
                 });
 
@@ -342,7 +331,7 @@ namespace Orpheus.Data.Migrations
                     b.Property<Guid>("BrandId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -427,36 +416,6 @@ namespace Orpheus.Data.Migrations
                             ItemType = 2,
                             Name = "The Dark Side of the Moon",
                             Price = 29.99m
-                        },
-                        new
-                        {
-                            Id = new Guid("99999999-9999-9999-9999-999999999999"),
-                            BrandId = new Guid("22222222-2222-2222-2222-222222222222"),
-                            Description = "High-quality 10ft cable with durable connectors for guitars and other instruments.",
-                            IsAvailable = true,
-                            ItemType = 3,
-                            Name = "Fender Deluxe Instrument Cable",
-                            Price = 24.99m
-                        },
-                        new
-                        {
-                            Id = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-bbbbbbbbbbbb"),
-                            BrandId = new Guid("44444444-4444-4444-4444-444444444444"),
-                            Description = "Set of 6 precision guitar picks, ideal for fast and articulate playing.",
-                            IsAvailable = true,
-                            ItemType = 3,
-                            Name = "Dunlop Jazz III Picks (6-pack)",
-                            Price = 5.99m
-                        },
-                        new
-                        {
-                            Id = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            BrandId = new Guid("55555555-5555-5555-5555-555555555555"),
-                            Description = "Compact pedal tuner with bright LED display, suitable for stage or studio use.",
-                            IsAvailable = true,
-                            ItemType = 3,
-                            Name = "Boss TU-3 Chromatic Tuner Pedal",
-                            Price = 99.99m
                         });
                 });
 
@@ -525,27 +484,6 @@ namespace Orpheus.Data.Migrations
                             IsMain = false,
                             ItemId = new Guid("66666666-6666-6666-6666-666666666666"),
                             Url = "https://m.media-amazon.com/images/I/61KduVSVYlL._SX425_.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
-                            IsMain = true,
-                            ItemId = new Guid("99999999-9999-9999-9999-999999999999"),
-                            Url = "https://m.media-amazon.com/images/I/61lELUFnnkL._UF1000,1000_QL80_.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("33333333-3333-3333-3333-333333333333"),
-                            IsMain = true,
-                            ItemId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-bbbbbbbbbbbb"),
-                            Url = "https://m.media-amazon.com/images/I/61crwsvMPcL._AC_SL1200_.jpg"
-                        },
-                        new
-                        {
-                            Id = new Guid("44444444-4444-4444-4444-444444444444"),
-                            IsMain = true,
-                            ItemId = new Guid("cccccccc-cccc-cccc-cccc-cccccccccccc"),
-                            Url = "https://m.media-amazon.com/images/I/61Rx712UAbL._UF894,1000_QL80_.jpg"
                         });
                 });
 
@@ -857,7 +795,9 @@ namespace Orpheus.Data.Migrations
 
                     b.HasOne("Orpheus.Data.Models.Category", "Category")
                         .WithMany("Items")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 

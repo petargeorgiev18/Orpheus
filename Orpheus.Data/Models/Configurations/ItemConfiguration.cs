@@ -69,9 +69,39 @@ namespace Orpheus.Data.Models.Configurations
                     Name = "The Dark Side of the Moon",
                     Description = "Pink Floyd's 1973 album, a landmark in progressive rock.",
                     Price = 29.99m,
-                    CategoryId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"), // Albums category Guid
-                    BrandId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"), // Pink Floyd label or brand Guid
+                    CategoryId = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    BrandId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
                     ItemType = ItemType.Album,
+                    IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                    Name = "Fender Deluxe Instrument Cable",
+                    Description = "High-quality 10ft cable with durable connectors for guitars and other instruments.",
+                    Price = 24.99m,
+                    BrandId = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                    ItemType = ItemType.Accessory,
+                    IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-bbbbbbbbbbbb"),
+                    Name = "Dunlop Jazz III Picks (6-pack)",
+                    Description = "Set of 6 precision guitar picks, ideal for fast and articulate playing.",
+                    Price = 5.99m,
+                    BrandId = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                    ItemType = ItemType.Accessory,
+                    IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                    Name = "Boss TU-3 Chromatic Tuner Pedal",
+                    Description = "Compact pedal tuner with bright LED display, suitable for stage or studio use.",
+                    Price = 99.99m,
+                    BrandId = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    ItemType = ItemType.Accessory,
                     IsAvailable = true
                 }
             };

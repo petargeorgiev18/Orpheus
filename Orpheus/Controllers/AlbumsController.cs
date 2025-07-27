@@ -43,7 +43,8 @@ namespace Orpheus.Controllers
                 Description = i.Description,
                 Price = i.Price,
                 BrandName = i.Brand?.Name ?? "Unknown",
-                ImageUrl = i.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
+                ImageUrl = i.Images.OrderByDescending(img=>img.IsMain)
+                    .FirstOrDefault()?.Url ?? "/images/default-image.png"
             });
 
             return View(viewModel);
@@ -66,7 +67,8 @@ namespace Orpheus.Controllers
                 Description = item.Description,
                 Price = item.Price,
                 BrandName = item.Brand?.Name ?? "Unknown Brand",
-                Images = item.Images.Select(i => i.Url).ToList()
+                Images = item.Images.OrderByDescending(img => img.IsMain)
+                    .Select(i => i.Url).ToList()
             };
 
             return View(viewModel);
