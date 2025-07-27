@@ -103,6 +103,36 @@ namespace Orpheus.Data.Models.Configurations
                     BrandId = Guid.Parse("55555555-5555-5555-5555-555555555555"),
                     ItemType = ItemType.Accessory,
                     IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0001"),
+                    Name = "Rammstein T-Shirt - Logo Edition",
+                    Description = "Official Rammstein band t-shirt with iconic logo. 100% cotton, black.",
+                    Price = 29.99m,
+                    BrandId = Guid.Parse("aaaaaaa1-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    ItemType = ItemType.Merch,
+                    IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0002"),
+                    Name = "Metallica Hoodie - Master of Puppets",
+                    Description = "Comfortable hoodie featuring 'Master of Puppets' album artwork.",
+                    Price = 49.99m,
+                    BrandId = Guid.Parse("ccccccc3-cccc-cccc-cccc-cccccccccccc"),
+                    ItemType = ItemType.Merch,
+                    IsAvailable = true
+                },
+                new Item
+                {
+                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddd0003"),
+                    Name = "Slayer Cap - Eagle Logo",
+                    Description = "Adjustable Slayer cap with embroidered eagle logo.",
+                    Price = 19.99m,
+                    BrandId = Guid.Parse("bbbbbbb2-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    ItemType = ItemType.Merch,
+                    IsAvailable = true
                 }
             };
         }
