@@ -17,9 +17,8 @@ namespace Orpheus.Data.Models
         [Required]
         [Column(TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
-        [Required]
         [ForeignKey(nameof(Category))]  
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         public Category Category { get; set; } = null!;
         [Required]
         [ForeignKey(nameof(Brand))]

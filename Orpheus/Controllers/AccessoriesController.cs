@@ -19,23 +19,23 @@ namespace Orpheus.Controllers
         {
             var accessories = await accessoryService.GetAvailableAccessoriesAsync();
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            // Filter
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 accessories = accessories
                     .Where(i => i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                              || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
-            if (!string.IsNullOrEmpty(sort))
+            // Sort
+            accessories = sort?.ToLower() switch
             {
-                accessories = sort.ToLower() switch
-                {
-                    "priceasc" => accessories.OrderBy(i => i.Price),
-                    "pricedesc" => accessories.OrderByDescending(i => i.Price),
-                    _ => accessories
-                };
-            }
+                "priceasc" => accessories.OrderBy(i => i.Price),
+                "pricedesc" => accessories.OrderByDescending(i => i.Price),
+                _ => accessories.OrderBy(i => i.Name)
+            };
 
+            // Project to ViewModel
             var viewModel = accessories.Select(i => new InstrumentViewModel
             {
                 Id = i.Id,
@@ -43,7 +43,10 @@ namespace Orpheus.Controllers
                 Description = i.Description,
                 Price = i.Price,
                 BrandName = i.Brand?.Name ?? "Unknown",
-                ImageUrl = i.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
+                ImageUrl = i.Images
+                            .OrderByDescending(img => img.IsMain) // Main image first
+                            .Select(img => img.Url)
+                            .FirstOrDefault() ?? "/images/default-image.png"
             });
 
             return View(viewModel);
@@ -65,8 +68,11 @@ namespace Orpheus.Controllers
                 Name = item.Name,
                 Description = item.Description,
                 Price = item.Price,
-                BrandName = item.Brand?.Name ?? "Unknown Brand",
-                Images = item.Images.Select(i => i.Url).ToList()
+                BrandName = item.Brand?.Name ?? "Unknown",
+                Images = item.Images
+                            .OrderByDescending(i => i.IsMain)
+                            .Select(i => i.Url)
+                            .ToList()
             };
 
             return View(viewModel);

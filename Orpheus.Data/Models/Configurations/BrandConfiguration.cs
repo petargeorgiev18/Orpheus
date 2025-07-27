@@ -59,7 +59,22 @@ namespace Orpheus.Data.Models.Configurations
                     Name = "Harvest Records",
                     Description = "Label for Pink Floyd's 'The Dark Side of the Moon'",
                     LogoUrl = "/images/brands/harvest_records.jpg"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("44444444-4444-4444-4444-444444444444"),
+                    Name = "Dunlop",
+                    Description = "Dunlop is a leading brand for guitar picks, capos, strings, and other accessories.",
+                    LogoUrl = "https://example.com/dunlop-logo.png"
+                },
+                new Brand
+                {
+                    Id = Guid.Parse("55555555-5555-5555-5555-555555555555"),
+                    Name = "Boss",
+                    Description = "Boss is a famous brand known for guitar pedals and tuners.",
+                    LogoUrl = "https://example.com/boss-logo.png"
                 }
+
             };
         }
     }

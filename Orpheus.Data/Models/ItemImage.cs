@@ -15,5 +15,6 @@ namespace Orpheus.Data.Models
         [ForeignKey(nameof(Item))]
         public Guid ItemId { get; set; }
         public Item Item { get; set; } = null!;
+        public bool? IsMain { get; set; } 
     }
 }
