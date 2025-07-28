@@ -1,95 +1,129 @@
 ﻿@model IEnumerable<Orpheus.ViewModels.InstrumentViewModel>
 
 @{
-    ViewData["Title"] = "All Instruments";
+	ViewData["Title"] = "All Instruments";
+	int currentPage = ViewBag.CurrentPage ?? 1;
+	int totalPages = ViewBag.TotalPages ?? 1;
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4 text-center text-primary">🎸 Browse Our Instruments</h2>
+	<h2 class="mb-4 text-center text-primary">🎸 Browse Our Instruments</h2>
 
-    <!-- Filter Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4 rounded">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="#">Filter</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#filterNavbar"
-                    aria-controls="filterNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+	<!-- Filters Navbar (unchanged) -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4 rounded">
+		<div class="container-fluid">
+			<a class="navbar-brand fw-bold" href="#">Filter</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#filterNavbar"
+					aria-controls="filterNavbar" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="filterNavbar">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<!-- Category Filter -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="typeDropdown" role="button" data-bs-toggle="dropdown">
+							Category
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="typeDropdown">
+							<li><a class="dropdown-item" href="?category=Guitars">Guitars</a></li>
+							<li><a class="dropdown-item" href="?category=Drums">Drums</a></li>
+							<li><a class="dropdown-item" href="?category=Keyboards">Keyboards</a></li>
+							<li><a class="dropdown-item" href="?category=Other">Other</a></li>
+						</ul>
+					</li>
+					<!-- Brand Filter -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button" data-bs-toggle="dropdown">
+							Brand
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="brandDropdown">
+							<li><a class="dropdown-item" href="?brand=Yamaha">Yamaha</a></li>
+							<li><a class="dropdown-item" href="?brand=Fender">Fender</a></li>
+							<li><a class="dropdown-item" href="?brand=Gibson">Gibson</a></li>
+							<li><a class="dropdown-item" href="?brand=Other">Other</a></li>
+						</ul>
+					</li>
+					<!-- Price Filter -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="priceDropdown" role="button" data-bs-toggle="dropdown">
+							Price
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="priceDropdown">
+							<li><a class="dropdown-item" href="?price=low">Under 200 BGN</a></li>
+							<li><a class="dropdown-item" href="?price=mid">200 - 1000 BGN</a></li>
+							<li><a class="dropdown-item" href="?price=high">1000+ BGN</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
-            <div class="collapse navbar-collapse" id="filterNavbar">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+	<!-- Instruments Grid -->
+	<div class="row row-cols-1 row-cols-md-3 g-4">
+		@if (!Model.Any())
+		{
+			<div class="col-12">
+				<p class="text-center text-muted">No instruments found.</p>
+			</div>
+		}
+		else
+		{
+			@foreach (var item in Model)
+			{
+				<div class="col">
+					<div class="card h-100 shadow-sm">
+						<img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
+						<div class="card-body d-flex flex-column">
+							<h5 class="card-title">@item.Name</h5>
+							<h6 class="text-muted">@item.BrandName</h6>
+							<p class="card-text flex-grow-1">@item.Description</p>
+							<div class="mt-auto d-flex justify-content-between align-items-center">
+								<strong class="text-primary">Price: @item.Price.ToString("F2") BGN</strong>
+								<a asp-controller="Instruments" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+									Details
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		}
+	</div>
+	<div class="text-center mt-4">
+		<nav aria-label="Page navigation">
+			<ul class="pagination justify-content-center">
 
-                    <!-- Type Filter -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="typeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Type
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="typeDropdown">
-                            <li><a class="dropdown-item" href="?type=Guitars">Guitars</a></li>
-                            <li><a class="dropdown-item" href="?type=Drums">Drums</a></li>
-                            <li><a class="dropdown-item" href="?type=Keyboards">Keyboards</a></li>
-                            <li><a class="dropdown-item" href="?type=Other">Other</a></li>
-                        </ul>
-                    </li>
+				<li class="page-item @(currentPage == 1 ? "disabled" : "")">
+					<a class="page-link" href="@Url.Action("All", new {
+                            page = currentPage - 1,
+                            category = Context.Request.Query["category"].ToString(),
+                            brand = Context.Request.Query["brand"].ToString(),
+                            price = Context.Request.Query["price"].ToString()
+                        })">Previous</a>
+				</li>
 
-                    <!-- Brand Filter -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="brandDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Brand
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="brandDropdown">
-                            <li><a class="dropdown-item" href="?brand=Yamaha">Yamaha</a></li>
-                            <li><a class="dropdown-item" href="?brand=Fender">Fender</a></li>
-                            <li><a class="dropdown-item" href="?brand=Gibson">Gibson</a></li>
-                            <li><a class="dropdown-item" href="?brand=Other">Other</a></li>
-                        </ul>
-                    </li>
+				@for (int i = 1; i <= totalPages; i++)
+				{
+					<li class="page-item @(currentPage == i ? "active" : "")">
+						<a class="page-link" href="@Url.Action("All", new {
+                                page = i,
+                                category = Context.Request.Query["category"].ToString(),
+                                brand = Context.Request.Query["brand"].ToString(),
+                                price = Context.Request.Query["price"].ToString()
+                            })">@i</a>
+					</li>
+				}
 
-                    <!-- Price Filter -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="priceDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Price
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="priceDropdown">
-                            <li><a class="dropdown-item" href="?price=low">Under 200 BGN</a></li>
-                            <li><a class="dropdown-item" href="?price=mid">200 - 1000 BGN</a></li>
-                            <li><a class="dropdown-item" href="?price=high">1000+ BGN</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Instruments List -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @if (!Model.Any())
-        {
-            <div class="col-12">
-                <p class="text-center text-muted">No instruments found.</p>
-            </div>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@item.Name</h5>
-                            <h6 class="text-muted">@item.BrandName</h6>
-                            <p class="card-text flex-grow-1">@item.Description</p>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <strong class="text-primary">Price: @item.Price.ToString("F2") BGN</strong>
-                                <a asp-controller="Instruments" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
-                                    Details
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
-    </div>
+				<li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+					<a class="page-link" href="@Url.Action("All", new {
+                            page = currentPage + 1,
+                            category = Context.Request.Query["category"].ToString(),
+                            brand = Context.Request.Query["brand"].ToString(),
+                            price = Context.Request.Query["price"].ToString()
+                        })">Next</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
 </div>

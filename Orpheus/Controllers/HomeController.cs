@@ -25,7 +25,7 @@ namespace Orpheus.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var instruments = await instrumentService.GetFeaturedInstrumentsAsync(6); // You can limit or filter
+            var instruments = await instrumentService.GetFeaturedInstrumentsAsync(6);
             var albums = await albumService.GetAvailableAlbumsAsync();
 
             var model = new HomeViewModel

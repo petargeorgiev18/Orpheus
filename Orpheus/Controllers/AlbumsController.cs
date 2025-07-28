@@ -15,7 +15,7 @@ namespace Orpheus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchTerm, string? sort)
+        public async Task<IActionResult> Index(string? searchTerm, string? sort, int page = 1, int pageSize = 6)
         {
             var albums = await albumService.GetAvailableAlbumsAsync();
 
@@ -36,19 +36,38 @@ namespace Orpheus.Controllers
                 };
             }
 
-            var viewModel = albums.Select(i => new InstrumentViewModel
-            {
-                Id = i.Id,
-                Name = i.Name,
-                Description = i.Description,
-                Price = i.Price,
-                BrandName = i.Brand?.Name ?? "Unknown",
-                ImageUrl = i.Images.OrderByDescending(img=>img.IsMain)
-                    .FirstOrDefault()?.Url ?? "/images/default-image.png"
-            });
+            int totalItems = albums.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            return View(viewModel);
+            // Clamp page number to valid range
+            if (page < 1)
+                page = 1;
+            if (totalPages > 0 && page > totalPages)
+                page = totalPages;
+
+            var itemsOnPage = albums
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(i => new InstrumentViewModel
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Description = i.Description,
+                    Price = i.Price,
+                    BrandName = i.Brand?.Name ?? "Unknown",
+                    ImageUrl = i.Images.OrderByDescending(img => img.IsMain)
+                        .FirstOrDefault()?.Url ?? "/images/default-image.png"
+                })
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.SearchTerm = searchTerm ?? "";
+            ViewBag.Sort = sort ?? "";
+
+            return View(itemsOnPage);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
