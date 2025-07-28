@@ -18,7 +18,7 @@ namespace Orpheus.Controllers
             this.itemService = itemService;
         }
 
-        // GET: /Cart
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -39,7 +39,6 @@ namespace Orpheus.Controllers
             return View(viewModel);
         }
 
-        // POST: /Cart/Add
         [HttpPost]
         public async Task<IActionResult> AddToCart(Guid id)
         {
@@ -59,7 +58,6 @@ namespace Orpheus.Controllers
             return RedirectToAction("Index", "Albums");
         }
 
-        // POST: /Cart/Remove
         [HttpPost]
         public async Task<IActionResult> Remove(Guid cartItemId)
         {

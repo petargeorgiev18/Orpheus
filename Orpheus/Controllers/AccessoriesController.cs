@@ -15,11 +15,10 @@ namespace Orpheus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchTerm, string? sort)
+        public async Task<IActionResult> Index(string? searchTerm, string? sort, int page = 1, int pageSize = 6)
         {
             var accessories = await accessoryService.GetAvailableAccessoriesAsync();
 
-            // Filter
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 accessories = accessories
@@ -27,7 +26,6 @@ namespace Orpheus.Controllers
                              || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
-            // Sort
             accessories = sort?.ToLower() switch
             {
                 "priceasc" => accessories.OrderBy(i => i.Price),
@@ -35,21 +33,37 @@ namespace Orpheus.Controllers
                 _ => accessories.OrderBy(i => i.Name)
             };
 
-            // Project to ViewModel
-            var viewModel = accessories.Select(i => new InstrumentViewModel
-            {
-                Id = i.Id,
-                Name = i.Name,
-                Description = i.Description,
-                Price = i.Price,
-                BrandName = i.Brand?.Name ?? "Unknown",
-                ImageUrl = i.Images
-                            .OrderByDescending(img => img.IsMain) // Main image first
-                            .Select(img => img.Url)
-                            .FirstOrDefault() ?? "/images/default-image.png"
-            });
+            int totalItems = accessories.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            return View(viewModel);
+            if (page < 1)
+                page = 1;
+            if (totalPages > 0 && page > totalPages)
+                page = totalPages;
+
+            var itemsOnPage = accessories
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(i => new InstrumentViewModel
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Description = i.Description,
+                    Price = i.Price,
+                    BrandName = i.Brand?.Name ?? "Unknown",
+                    ImageUrl = i.Images
+                                .OrderByDescending(img => img.IsMain)
+                                .Select(img => img.Url)
+                                .FirstOrDefault() ?? "/images/default-image.png"
+                })
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.SearchTerm = searchTerm ?? "";
+            ViewBag.Sort = sort ?? "";
+
+            return View(itemsOnPage);
         }
 
         [HttpGet]

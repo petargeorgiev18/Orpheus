@@ -15,7 +15,7 @@ namespace Orpheus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchTerm, string? sort)
+        public async Task<IActionResult> Index(string? searchTerm, string? sort, int page = 1, int pageSize = 6)
         {
             var merch = await merchService.GetAvailableMerchAsync();
 
@@ -26,27 +26,41 @@ namespace Orpheus.Controllers
                              || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
-            if (!string.IsNullOrEmpty(sort))
+            merch = sort?.ToLower() switch
             {
-                merch = sort.ToLower() switch
+                "priceasc" => merch.OrderBy(i => i.Price),
+                "pricedesc" => merch.OrderByDescending(i => i.Price),
+                _ => merch.OrderBy(i => i.Name)
+            };
+
+            int totalItems = merch.Count();
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            if (page < 1)
+                page = 1;
+            if (totalPages > 0 && page > totalPages)
+                page = totalPages;
+
+            var itemsOnPage = merch
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(i => new InstrumentViewModel
                 {
-                    "priceasc" => merch.OrderBy(i => i.Price),
-                    "pricedesc" => merch.OrderByDescending(i => i.Price),
-                    _ => merch
-                };
-            }
+                    Id = i.Id,
+                    Name = i.Name,
+                    Description = i.Description,
+                    Price = i.Price,
+                    BrandName = i.Brand?.Name ?? "Unknown",
+                    ImageUrl = i.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
+                })
+                .ToList();
 
-            var viewModel = merch.Select(i => new InstrumentViewModel
-            {
-                Id = i.Id,
-                Name = i.Name,
-                Description = i.Description,
-                Price = i.Price,
-                BrandName = i.Brand?.Name ?? "Unknown",
-                ImageUrl = i.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
-            });
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.SearchTerm = searchTerm ?? "";
+            ViewBag.Sort = sort ?? "";
 
-            return View(viewModel);
+            return View(itemsOnPage);
         }
 
         [HttpGet]

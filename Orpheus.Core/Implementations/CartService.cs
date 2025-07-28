@@ -16,7 +16,8 @@ namespace Orpheus.Core.Implementations
         private readonly IRepository<CartItem, Guid> cartRepo;
         private readonly IRepository<Cart, Guid> cartRepository;
         private readonly IRepository<Item, Guid> itemRepository;
-        public CartService(IRepository<CartItem, Guid> cartRepo, IRepository<Cart, Guid> cartRepository, IRepository<Item, Guid> itemRepository)
+        public CartService(IRepository<CartItem, Guid> cartRepo,
+            IRepository<Cart, Guid> cartRepository, IRepository<Item, Guid> itemRepository)
         {
             this.cartRepo = cartRepo;
             this.cartRepository = cartRepository;
@@ -127,8 +128,8 @@ namespace Orpheus.Core.Implementations
 
         public async Task UpdateQuantityAsync(Guid cartItemId, int quantity, Guid userId)
         {
-            var cartItem = await cartRepo.GetAllTracked() // Use cartRepo here
-                .Include(ci => ci.Cart) // Include Cart navigation to check ownership
+            var cartItem = await cartRepo.GetAllTracked()
+                .Include(ci => ci.Cart)
                 .FirstOrDefaultAsync(ci => ci.Id == cartItemId);
 
             if (cartItem == null || cartItem.Cart.UserId != userId)
@@ -136,7 +137,7 @@ namespace Orpheus.Core.Implementations
 
             cartItem.Quantity = quantity;
 
-            await cartRepo.UpdateAsync(cartItem); // Use cartRepo here to update
+            await cartRepo.UpdateAsync(cartItem);
         }
 
     }

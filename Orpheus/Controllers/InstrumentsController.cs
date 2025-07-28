@@ -14,26 +14,17 @@ namespace Orpheus.Controllers
             this.instrumentItemService = instrumentItemService;
         }
         [HttpGet]
-        public async Task<IActionResult> All(string? type, string? brand, string? price)
+        public async Task<IActionResult> All(string? category, string? brand, string? price, int page = 1, int pageSize = 6)
         {
             var instruments = await instrumentItemService.GetAvailableInstrumentsAsync();
 
-            if (!string.IsNullOrEmpty(type))
-            {
-                instruments = instruments
-                    .Where(i => i.Category != null &&
-                                i.Category.CategoryName.Contains(type, StringComparison.OrdinalIgnoreCase));
-            }
+            if (!string.IsNullOrEmpty(category))
+                instruments = instruments.Where(i => i.Category?.CategoryName.Contains(category, StringComparison.OrdinalIgnoreCase) == true);
 
             if (!string.IsNullOrEmpty(brand))
-            {
-                instruments = instruments
-                    .Where(i => i.Brand != null &&
-                                i.Brand.Name.Contains(brand, StringComparison.OrdinalIgnoreCase));
-            }
+                instruments = instruments.Where(i => i.Brand?.Name.Contains(brand, StringComparison.OrdinalIgnoreCase) == true);
 
             if (!string.IsNullOrEmpty(price))
-            {
                 instruments = price.ToLower() switch
                 {
                     "low" => instruments.Where(i => i.Price < 200),
@@ -41,20 +32,35 @@ namespace Orpheus.Controllers
                     "high" => instruments.Where(i => i.Price > 1000),
                     _ => instruments
                 };
-            }
 
-            var viewModel = instruments.Select(i => new InstrumentViewModel
-            {
-                Id = i.Id,
-                Name = i.Name,
-                Description = i.Description,
-                Price = i.Price,
-                BrandName = i.Brand?.Name ?? "Unknown",
-                ImageUrl = i.Images.OrderByDescending(img=>img.IsMain).FirstOrDefault()?.Url ?? "/images/default-image.png"
-            });
+            int totalItems = instruments.Count();
 
-            return View(viewModel);
+            int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            if (page < 1)
+                page = 1;
+            if (totalPages > 0 && page > totalPages)
+                page = totalPages;
+
+            var itemsOnPage = instruments
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(i => new InstrumentViewModel
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Description = i.Description,
+                    Price = i.Price,
+                    BrandName = i.Brand?.Name ?? "Unknown",
+                    ImageUrl = i.Images.OrderByDescending(img => img.IsMain).FirstOrDefault()?.Url ?? "/images/default-image.png"
+                })
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(itemsOnPage);
         }
+
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
         {
