@@ -69,7 +69,6 @@ namespace Orpheus.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Cart/Clear
         [HttpPost]
         public async Task<IActionResult> Clear()
         {
@@ -90,12 +89,81 @@ namespace Orpheus.Controllers
                 return Unauthorized();
 
             if (quantity < 1)
-                quantity = 1; // prevent invalid values
+                quantity = 1;
 
             await cartService.UpdateQuantityAsync(cartItemId, quantity, Guid.Parse(userId));
 
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            var cartItemsDto = await cartService.GetCartItemsAsync(Guid.Parse(userId));
+
+            if (!cartItemsDto.Any())
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var cartItemsVm = cartItemsDto.Select(dto => new CartItemViewModel
+            {
+                CartItemId = dto.CartItemId,
+                ItemId = dto.ItemId,
+                Name = dto.Name,
+                ImageUrl = dto.ImageUrl,
+                Price = dto.Price,
+                Quantity = dto.Quantity
+            }).ToList();
+
+            var model = new CheckoutViewModel
+            {
+                CartItems = cartItemsVm
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(CheckoutViewModel model)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null) return Unauthorized();
+
+            var cartItemsDto = await cartService.GetCartItemsAsync(Guid.Parse(userId));
+            if (!cartItemsDto.Any())
+            {
+                ModelState.AddModelError("", "Your cart is empty.");
+                return View(model);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.CartItems = cartItemsDto.Select(dto => new CartItemViewModel
+                {
+                    CartItemId = dto.CartItemId,
+                    ItemId = dto.ItemId,
+                    Name = dto.Name,
+                    ImageUrl = dto.ImageUrl,
+                    Price = dto.Price,
+                    Quantity = dto.Quantity
+                }).ToList();
+                return View(model);
+            }
+
+            // TODO: Here you would process payment and create an order in DB
+
+            // For now, simulate order success:
+            await cartService.ClearCartAsync(Guid.Parse(userId));
+
+            TempData["Success"] = "Thank you for your purchase! Your order has been placed.";
+
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

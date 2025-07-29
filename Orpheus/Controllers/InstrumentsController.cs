@@ -14,7 +14,7 @@ namespace Orpheus.Controllers
             this.instrumentItemService = instrumentItemService;
         }
         [HttpGet]
-        public async Task<IActionResult> All(string? category, string? brand, string? price, int page = 1, int pageSize = 6)
+        public async Task<IActionResult> All(string? category, string? brand, string? price, string? sort, int page = 1, int pageSize = 6)
         {
             var instruments = await instrumentItemService.GetAvailableInstrumentsAsync();
 
@@ -32,6 +32,16 @@ namespace Orpheus.Controllers
                     "high" => instruments.Where(i => i.Price > 1000),
                     _ => instruments
                 };
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+                instruments = sort.ToLower() switch
+                {
+                    "priceasc" => instruments.OrderBy(i => i.Price),
+                    "pricedesc" => instruments.OrderByDescending(i => i.Price),
+                    _ => instruments
+                };
+            }
 
             int totalItems = instruments.Count();
 
@@ -56,7 +66,8 @@ namespace Orpheus.Controllers
                 .ToList();
 
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.TotalPages = totalPages;
+            ViewBag.Sort = sort;
 
             return View(itemsOnPage);
         }
