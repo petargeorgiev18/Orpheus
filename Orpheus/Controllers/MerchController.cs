@@ -15,15 +15,25 @@ namespace Orpheus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchTerm, string? sort, int page = 1, int pageSize = 6)
+        public async Task<IActionResult> Index(string? searchTerm, string? sort, string? price, int page = 1, int pageSize = 6)
         {
             var merch = await merchService.GetAvailableMerchAsync();
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                merch = merch
-                    .Where(i => i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                             || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+                merch = merch.Where(i => i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                                    || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(price))
+            {
+                merch = price.ToLower() switch
+                {
+                    "low" => merch.Where(i => i.Price < 20),
+                    "mid" => merch.Where(i => i.Price >= 20 && i.Price <= 60),
+                    "high" => merch.Where(i => i.Price > 60),
+                    _ => merch
+                };
             }
 
             merch = sort?.ToLower() switch
@@ -59,7 +69,7 @@ namespace Orpheus.Controllers
             ViewBag.TotalPages = totalPages;
             ViewBag.SearchTerm = searchTerm ?? "";
             ViewBag.Sort = sort ?? "";
-
+            ViewBag.Price = price ?? "";
             return View(itemsOnPage);
         }
 

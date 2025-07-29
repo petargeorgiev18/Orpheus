@@ -6,12 +6,13 @@ using Orpheus.Data.Models;
 using Orpheus.Data.Repository.Interfaces;
 using Orpheus.Data.Repository;
 using Orpheus.Core.Implementations;
+using Orpheus.Areas.Identity.Data;
 
 namespace Orpheus
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,8 @@ namespace Orpheus
             builder.Services.AddScoped<IItemService, ItemService>();
             builder.Services.AddScoped<IAccessoryService, AccessoryService>();
             builder.Services.AddScoped<IMerchService, MerchService>();
+            builder.Services.AddScoped<IOrderService, OrderService>();
+
 
             var app = builder.Build();
 
@@ -74,6 +77,12 @@ namespace Orpheus
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                await IdentitySeedData.InitializeAsync(services);
+            }
 
             app.Run();
         }

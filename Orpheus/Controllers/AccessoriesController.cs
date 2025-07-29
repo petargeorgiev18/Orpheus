@@ -15,7 +15,7 @@ namespace Orpheus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchTerm, string? sort, int page = 1, int pageSize = 6)
+        public async Task<IActionResult> Index(string? searchTerm, string? sort, string? price, int page = 1, int pageSize = 6)
         {
             var accessories = await accessoryService.GetAvailableAccessoriesAsync();
 
@@ -24,6 +24,17 @@ namespace Orpheus.Controllers
                 accessories = accessories
                     .Where(i => i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
                              || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            if (!string.IsNullOrEmpty(price))
+            {
+                accessories = price.ToLower() switch
+                {
+                    "low" => accessories.Where(i => i.Price < 20),
+                    "mid" => accessories.Where(i => i.Price >= 20 && i.Price <= 60),
+                    "high" => accessories.Where(i => i.Price > 60),
+                    _ => accessories
+                };
             }
 
             accessories = sort?.ToLower() switch
@@ -62,6 +73,7 @@ namespace Orpheus.Controllers
             ViewBag.TotalPages = totalPages;
             ViewBag.SearchTerm = searchTerm ?? "";
             ViewBag.Sort = sort ?? "";
+            ViewBag.Price = price ?? "";
 
             return View(itemsOnPage);
         }

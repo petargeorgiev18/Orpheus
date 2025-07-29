@@ -15,18 +15,29 @@ namespace Orpheus.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? searchTerm, string? sort, int page = 1, int pageSize = 6)
+        public async Task<IActionResult> Index(string? searchTerm, string? sort, string? price, int page = 1, int pageSize = 6)
         {
             var albums = await albumService.GetAvailableAlbumsAsync();
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                albums = albums
-                    .Where(i => i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                             || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
+                albums = albums.Where(i =>
+                    i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                    || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
-            if (!string.IsNullOrEmpty(sort))
+            if (!string.IsNullOrWhiteSpace(price))
+            {
+                albums = price.ToLower() switch
+                {
+                    "low" => albums.Where(i => i.Price < 20m),
+                    "mid" => albums.Where(i => i.Price >= 20m && i.Price <= 60m),
+                    "high" => albums.Where(i => i.Price > 60m),
+                    _ => albums
+                };
+            }
+
+            if (!string.IsNullOrWhiteSpace(sort))
             {
                 albums = sort.ToLower() switch
                 {
@@ -39,7 +50,6 @@ namespace Orpheus.Controllers
             int totalItems = albums.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            // Clamp page number to valid range
             if (page < 1)
                 page = 1;
             if (totalPages > 0 && page > totalPages)
@@ -55,8 +65,7 @@ namespace Orpheus.Controllers
                     Description = i.Description,
                     Price = i.Price,
                     BrandName = i.Brand?.Name ?? "Unknown",
-                    ImageUrl = i.Images.OrderByDescending(img => img.IsMain)
-                        .FirstOrDefault()?.Url ?? "/images/default-image.png"
+                    ImageUrl = i.Images.OrderByDescending(img => img.IsMain).FirstOrDefault()?.Url ?? "/images/default-image.png"
                 })
                 .ToList();
 
@@ -64,10 +73,10 @@ namespace Orpheus.Controllers
             ViewBag.TotalPages = totalPages;
             ViewBag.SearchTerm = searchTerm ?? "";
             ViewBag.Sort = sort ?? "";
+            ViewBag.Price = price ?? "";
 
             return View(itemsOnPage);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid id)
