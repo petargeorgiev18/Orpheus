@@ -2,6 +2,7 @@
 using Orpheus.Core.DTOs;
 using Orpheus.Core.Interfaces;
 using Orpheus.Data.Models;
+using Orpheus.Data.Models.Enums;
 using Orpheus.Data.Repository.Interfaces;
 
 namespace Orpheus.Core.Implementations
@@ -24,52 +25,53 @@ namespace Orpheus.Core.Implementations
 
         public async Task<Guid> CreateOrderAsync(CheckoutDto model)
         {
-            if (model == null)
-                throw new ArgumentNullException(nameof(model));
-
-            var itemIds = model.Items.Select(i => i.ItemId).ToList();
-            var itemsInDb = await itemRepository.GetAllAsNoTracking()
-                .Where(i => itemIds.Contains(i.Id))
-                .ToListAsync();
-
-            if (itemsInDb.Count != model.Items.Count)
-                throw new InvalidOperationException("Some items are no longer available.");
-
-            foreach (var orderItem in model.Items)
-            {
-                var dbItem = itemsInDb.First(i => i.Id == orderItem.ItemId);
-                if (dbItem.Price != orderItem.Price)
-                    throw new InvalidOperationException($"Price mismatch for item {dbItem.Name}.");
-            }
-
             var order = new Order
             {
                 Id = Guid.NewGuid(),
                 UserId = model.UserId,
                 OrderDate = DateTime.UtcNow,
-                OrderStatus = Data.Models.Enums.OrdersStatus.Pending,
-                PaymentStatus = Data.Models.Enums.PaymentStatus.Pending,
+                OrderStatus = OrdersStatus.Pending,
+                PaymentStatus = PaymentStatus.Pending,
                 Amount = model.TotalAmount,
-                PaidAt = DateTime.MinValue 
-            };
-
-            await orderRepository.AddAsync(order);
-
-            foreach (var item in model.Items)
-            {
-                var orderItem = new OrderItem
+                PaidAt = DateTime.MinValue,
+                OrderItems = model.Items.Select(item => new OrderItem
                 {
                     Id = Guid.NewGuid(),
-                    OrderId = order.Id,
                     ItemId = item.ItemId,
                     Quantity = item.Quantity,
-                    Price = item.Price
-                };
+                    Price = item.Price,
+                }).ToList()
+            };
 
-                await orderItemRepository.AddAsync(orderItem);
-            }
+            await orderRepository.AddWithoutSavingAsync(order);
+            await orderRepository.SaveChangesAsync();
 
             return order.Id;
+        }
+
+
+
+        public async Task<List<OrderDto>> GetOrdersByUserAsync(Guid userId)
+        {
+            var orders = await orderRepository.GetAllAsNoTracking()
+                .Where(o => o.UserId == userId)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Item)
+                .ToListAsync();
+
+            return orders.Select(order => new OrderDto
+            {
+                OrderId = order.Id,
+                OrderDate = order.OrderDate,
+                Status = order.OrderStatus.ToString(),
+                TotalAmount = order.Amount,
+                Items = order.OrderItems.Select(oi => new OrderItemDto
+                {
+                    Name = oi.Item.Name,
+                    Quantity = oi.Quantity,
+                    Price = oi.Price
+                }).ToList()
+            }).ToList();
         }
     }
 }

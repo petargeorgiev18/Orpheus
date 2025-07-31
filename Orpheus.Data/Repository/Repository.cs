@@ -19,6 +19,11 @@ namespace Orpheus.Data.Repository
             await this.context.SaveChangesAsync();
         }
 
+        public async Task AddWithoutSavingAsync(TEntity item)
+        {
+            await this.context.AddAsync(item);
+        }
+
         public async Task DeleteAsync(TId id)
         {
             TEntity? item = await this.GetByIdAsync(id);
