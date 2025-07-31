@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Order Success";
+}
+
+<h2>Thank you for your order!</h2>
+
+<p>Your order has been placed successfully.</p>
+
+@if (ViewBag.OrderId != null)
+{
+    <p>Order ID: @ViewBag.OrderId</p>
+}
+
+<a asp-controller="Orders" asp-action="MyOrders" class="btn btn-primary">View My Orders</a>

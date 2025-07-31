@@ -47,22 +47,25 @@ namespace Orpheus.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> PlaceOrder(CheckoutViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                // Return with errors
-                return View("Index", model);
-            }
-
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!Guid.TryParse(userIdStr, out var userId))
                 return Unauthorized();
 
-            // Map ViewModel to CheckoutDto
+            var cartItems = await cartService.GetCartItemsAsync(userId);
+
+            if (!cartItems.Any())
+            {
+                ModelState.AddModelError("", "Your cart is empty.");
+                return RedirectToAction("Index");
+            }
+
+            var totalAmount = cartItems.Sum(ci => ci.Price * ci.Quantity);
+
             var checkoutDto = new Core.DTOs.CheckoutDto
             {
                 UserId = userId,
-                TotalAmount = model.GrandTotal,
-                Items = model.CartItems.Select(ci => new Core.DTOs.CheckoutItemDto
+                TotalAmount = totalAmount,
+                Items = cartItems.Select(ci => new Core.DTOs.CheckoutItemDto
                 {
                     ItemId = ci.ItemId,
                     Quantity = ci.Quantity,
@@ -73,15 +76,21 @@ namespace Orpheus.Controllers
             try
             {
                 var orderId = await orderService.CreateOrderAsync(checkoutDto);
-
-                // Optionally clear cart after order
                 await cartService.ClearCartAsync(userId);
-
                 return RedirectToAction("OrderSuccess", new { id = orderId });
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
+                model.CartItems = cartItems.Select(ci => new CartItemViewModel
+                {
+                    CartItemId = ci.CartItemId,
+                    ItemId = ci.ItemId,
+                    Name = ci.Name,
+                    ImageUrl = ci.ImageUrl,
+                    Price = ci.Price,
+                    Quantity = ci.Quantity
+                }).ToList();
                 return View("Index", model);
             }
         }

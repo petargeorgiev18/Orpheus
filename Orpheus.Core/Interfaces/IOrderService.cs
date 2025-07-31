@@ -11,5 +11,7 @@ namespace Orpheus.Core.Interfaces
     public interface IOrderService
     {
         Task<Guid> CreateOrderAsync(CheckoutDto model);
+        Task<List<OrderDto>> GetOrdersByUserAsync(Guid userId);
+
     }
 }

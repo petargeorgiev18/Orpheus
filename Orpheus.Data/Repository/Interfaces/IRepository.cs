@@ -14,6 +14,7 @@ namespace Orpheus.Data.Repository.Interfaces
         IQueryable<TEntity> GetAllTracked();
         IQueryable<TEntity> GetAllAsNoTracking();
         Task AddAsync(TEntity entity);
+        Task AddWithoutSavingAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TId id);
         Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
