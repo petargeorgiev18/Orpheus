@@ -7,6 +7,7 @@
     var currentPrice = ViewBag.Price ?? "";
     int currentPage = ViewBag.CurrentPage ?? 1;
     int totalPages = ViewBag.TotalPages ?? 1;
+    bool hasItems = Model.Any();
 }
 
 <h2 class="text-center my-4">🎒 Browse Our Accessories</h2>
@@ -38,7 +39,7 @@
 </form>
 
 <div class="row row-cols-1 row-cols-md-3 g-4">
-    @if (!Model.Any())
+    @if (!hasItems)
     {
         <div class="col-12 text-center text-muted">No accessories found.</div>
     }
@@ -64,21 +65,24 @@
     }
 </div>
 
-<nav aria-label="Page navigation" class="mt-4">
-    <ul class="pagination justify-content-center">
-        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Index", new { page = currentPage - 1, searchTerm = currentSearch, price = currentPrice, sort = currentSort })">Previous</a>
-        </li>
-
-        @for (int i = 1; i <= totalPages; i++)
-        {
-            <li class="page-item @(currentPage == i ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = i, searchTerm = currentSearch, price = currentPrice, sort = currentSort })">@i</a>
+@if (hasItems && totalPages >= 1)
+{
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="@(currentPage == 1 ? "#" : Url.Action("Index", new { page = currentPage - 1, searchTerm = currentSearch, price = currentPrice, sort = currentSort }))">Previous</a>
             </li>
-        }
 
-        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Index", new { page = currentPage + 1, searchTerm = currentSearch, price = currentPrice, sort = currentSort })">Next</a>
-        </li>
-    </ul>
-</nav>
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(currentPage == i ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i, searchTerm = currentSearch, price = currentPrice, sort = currentSort })">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" href="@(currentPage == totalPages ? "#" : Url.Action("Index", new { page = currentPage + 1, searchTerm = currentSearch, price = currentPrice, sort = currentSort }))">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

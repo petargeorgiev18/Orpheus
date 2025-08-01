@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Orpheus.Common\Orpheus.Common.csproj" />
     <ProjectReference Include="..\Orpheus.Core\Orpheus.Core.csproj" />
     <ProjectReference Include="..\Orpheus.Data\Orpheus.Data.csproj" />
   </ItemGroup>

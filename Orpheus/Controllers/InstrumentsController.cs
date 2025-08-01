@@ -8,10 +8,12 @@ namespace Orpheus.Controllers
     public class InstrumentsController : Controller
     {
         private readonly IInstrumentService instrumentItemService;
+        private readonly IReviewService reviewService;
 
-        public InstrumentsController(IInstrumentService instrumentItemService)
+        public InstrumentsController(IInstrumentService instrumentItemService, IReviewService reviewService)
         {
             this.instrumentItemService = instrumentItemService;
+            this.reviewService = reviewService;
         }
         [HttpGet]
         public async Task<IActionResult> All(string? searchTerm, string? category, string? brand, string? price, string? sort, int page = 1, int pageSize = 6)
@@ -57,7 +59,6 @@ namespace Orpheus.Controllers
             page = Math.Clamp(page, 1, totalPages == 0 ? 1 : totalPages);
 
             var itemsOnPage = instruments
-                .OrderBy(i=>i.Reviews)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(i => new ItemViewModel
@@ -90,6 +91,17 @@ namespace Orpheus.Controllers
             {
                 return NotFound();
             }
+
+            var reviewsDto = await reviewService.GetReviewsByItemIdAsync(id);
+
+            var reviewsVm = reviewsDto.Select(r => new ReviewViewModel
+            {
+                UserFullName = r.UserFullName,
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt
+            }).ToList();
+
             var viewModel = new ItemViewModel
             {
                 Id = item.Id,
@@ -98,9 +110,11 @@ namespace Orpheus.Controllers
                 Price = item.Price,
                 BrandName = item.Brand?.Name ?? "Unknown Brand",
                 Images = item.Images != null && item.Images.Any()
-                    ? item.Images.OrderByDescending(img=>img.IsMain).Select(img => img.Url).ToList()
-                    : new List<string> { "/images/default-image.png" }
+                    ? item.Images.OrderByDescending(img => img.IsMain).Select(img => img.Url).ToList()
+                    : new List<string> { "/images/default-image.png" },
+                Reviews = reviewsVm 
             };
+
             return View(viewModel);
         }
     }

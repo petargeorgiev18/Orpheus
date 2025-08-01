@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Orpheus.Common
+﻿namespace Orpheus.Common
 {
     public static class EntityClassesValidation
     {
@@ -35,18 +29,27 @@ namespace Orpheus.Common
         {
             public const int UserNameMaxLength = 100;
             public const int UserNameMinLength = 3;
+            public const int FullNameMaxLength = 100;
+            public const int FullNameMinLength = 10;
             public const int EmailMaxLength = 256;
             public const int PasswordMaxLength = 256;
             public const int PhoneNumberMaxLength = 15;
-            public const int StreetMaxLength = 80;
+            public const int PhoneNumberMinLength = 10;
+            public const int AddressMaxLength = 80;
+            public const int AddressMinLength = 10;
             public const int CityMaxLength = 50;
-            public const int ZipCodeMaxLength = 10;
-            public const int ZipCodeMinLength = 4;
+            public const int CityMinLength = 3;
+            public const int PostalCodeMaxLength = 10;
+            public const int PostalCodeMinLength = 4;
             public const int CountryMaxLength = 50;
+            public const int ExpiryMonthMaxValue = 12;
+            public const int ExpiryMonthMinValue = 1;
+            public const int ExpiryYearMinValue = 2025;
+            public const int ExpiryYearMaxValue = 2100;
         }
         public static class Review
         {
-            public const int ReviewCommentMaxLength = 500;
+            public const int ReviewCommentMaxLength = 150;
             public const int ReviewRatingMinValue = 1;
             public const int ReviewRatingMaxValue = 5;
         }

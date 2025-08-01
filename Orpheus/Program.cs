@@ -48,7 +48,7 @@ namespace Orpheus
             builder.Services.AddScoped<IAccessoryService, AccessoryService>();
             builder.Services.AddScoped<IMerchService, MerchService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-
+            builder.Services.AddScoped<IReviewService, ReviewService>();
 
             var app = builder.Build();
 

@@ -1,0 +1,36 @@
+﻿@model Orpheus.ViewModels.ReviewFormViewModel
+
+@if (User.Identity?.IsAuthenticated ?? false)
+{
+    <div class="mt-4">
+        <h5 class="mb-3">Leave a Review</h5>
+        <form asp-action="Add" asp-controller="Reviews" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ItemId" />
+
+            <div class="mb-3">
+                <label asp-for="Rating" class="form-label"></label>
+                <select asp-for="Rating" class="form-select">
+                    <option value="">Select rating</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <option value="@i">@i Star@(i > 1 ? "s" : "")</option>
+                    }
+                </select>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Comment" class="form-label"></label>
+                <textarea asp-for="Comment" class="form-control" rows="3" placeholder="Write your review..."></textarea>
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    </div>
+}
+else
+{
+    <p class="mt-4 text-muted">You must <a href="/Identity/Account/Login">log in</a> to leave a review.</p>
+}

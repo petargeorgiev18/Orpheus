@@ -3,50 +3,58 @@
 @{
     ViewData["Title"] = $"{Model.Name} - Merch Details";
     bool hasMultipleImages = Model.Images != null && Model.Images.Count > 1;
+    bool hasRealImages = Model.Images != null && Model.Images.Any(img => !img.Contains("/images/default-image.png"));
 }
 
 <div class="container mt-5">
     <div class="row">
-        <!-- Merch Images -->
+        <!-- Images Carousel / Single Image -->
         <div class="col-md-6">
-            <div id="merchCarousel" class="carousel slide rounded shadow" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    @for (int i = 0; i < Model.Images.Count; i++)
+            @if (hasRealImages)
+            {
+                <div id="merchCarousel" class="carousel slide rounded shadow" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.Images.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <a href="@Model.Images[i]" class="glightbox" data-gallery="merchGallery" data-title="@Model.Name">
+                                    <img src="@Model.Images[i]" class="d-block w-100" style="max-height: 400px; object-fit: cover;" alt="Merch Image" />
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    @if (hasMultipleImages)
                     {
-                        <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <a href="@Model.Images[i]" class="glightbox" data-gallery="merchGallery" data-title="@Model.Name">
-                                <img src="@Model.Images[i]" class="d-block w-100" style="max-height: 400px; object-fit: cover;" alt="Merch Image" />
-                            </a>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#merchCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#merchCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+
+                        <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
+                            @for (int i = 0; i < Model.Images.Count; i++)
+                            {
+                                <a href="@Model.Images[i]" class="glightbox img-thumbnail p-0"
+                                   style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                                   data-gallery="merchGallery" data-title="@Model.Name" data-glightbox-open="false">
+                                    <img src="@Model.Images[i]" alt="Thumbnail @i" style="width: 100%; height: 100%; object-fit: cover;" />
+                                </a>
+                            }
                         </div>
                     }
                 </div>
-
-                @if (hasMultipleImages)
-                {
-                    <button class="carousel-control-prev" type="button" data-bs-target="#merchCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#merchCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
-
-                    <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
-                        @for (int i = 0; i < Model.Images.Count; i++)
-                        {
-                            <a href="@Model.Images[i]" class="glightbox img-thumbnail p-0"
-                               style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                               data-gallery="merchGallery" data-title="@Model.Name" data-glightbox-open="false">
-                                <img src="@Model.Images[i]" alt="Thumbnail @i" style="width: 100%; height: 100%; object-fit: cover;" />
-                            </a>
-                        }
-                    </div>
-                }
-            </div>
+            }
+            else
+            {
+                <img src="/images/default-image.png" alt="No image available" class="img-fluid rounded shadow" />
+            }
         </div>
 
-        <!-- Merch Info -->
+        <!-- Merch Info + Review Form + Reviews -->
         <div class="col-md-6">
             <h2 class="text-primary">@Model.Name</h2>
             <h5 class="text-muted mb-3">@Model.BrandName</h5>
@@ -71,6 +79,56 @@
                 }
 
                 <a asp-action="Index" asp-controller="Merch" class="btn btn-outline-secondary mt-3 d-block">← Back to list</a>
+
+                @* Show Review error message if any *@
+                @if (TempData["ReviewError"] != null)
+                {
+                    <div class="alert alert-danger mt-3">
+                        @TempData["ReviewError"]
+                    </div>
+                }
+
+                @await Html.PartialAsync("_ReviewFormPartial", new Orpheus.ViewModels.ReviewFormViewModel { ItemId = Model.Id })
+            </div>
+
+            <div class="mt-5">
+                <h4>Reviews (@Model.Reviews?.Count):</h4>
+
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>@review.UserFullName</strong>
+                                    <small class="text-muted">@review.CreatedAt.ToString("dd MMM yyyy")</small>
+                                </div>
+                                <div>
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= review.Rating)
+                                        {
+                                            <span class="text-warning">&#9733;</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-secondary">&#9733;</span>
+                                        }
+                                    }
+                                </div>
+                                @if (!string.IsNullOrWhiteSpace(review.Comment))
+                                {
+                                    <p class="mt-1">@review.Comment</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No reviews yet. Be the first to leave a review!</p>
+                }
             </div>
         </div>
     </div>

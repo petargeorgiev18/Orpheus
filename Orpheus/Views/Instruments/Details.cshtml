@@ -1,8 +1,8 @@
-﻿@model Orpheus.ViewModels.ItemViewModel
+﻿@using Orpheus.ViewModels
+@model Orpheus.ViewModels.ItemViewModel
 
 @{
     ViewData["Title"] = Model.Name;
-
     bool hasRealImages = Model.Images != null && Model.Images.Any(img => !img.Contains("/images/default-image.png"));
     bool multipleRealImages = Model.Images != null && Model.Images.Count(img => !img.Contains("/images/default-image.png")) > 1;
     string galleryAttribute = multipleRealImages ? "instrumentGallery" : "";
@@ -86,6 +86,55 @@
                 <a asp-action="All" asp-controller="Instruments" class="btn btn-outline-secondary mt-3 d-block">
                     ← Back to list
                 </a>
+
+                @if (TempData["ReviewError"] != null)
+                {
+                    <div class="alert alert-danger mt-3">
+                        @TempData["ReviewError"]
+                    </div>
+                }
+
+                @await Html.PartialAsync("_ReviewFormPartial", new ReviewFormViewModel { ItemId = Model.Id })
+            </div>
+
+            <div class="mt-5">
+                <h4>Reviews: (@Model.Reviews?.Count)</h4>
+
+                @if (Model.Reviews != null && Model.Reviews.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var review in Model.Reviews)
+                        {
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between">
+                                    <strong>@review.UserFullName</strong>
+                                    <small class="text-muted">@review.CreatedAt.ToString("dd MMM yyyy")</small>
+                                </div>
+                                <div>
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= review.Rating)
+                                        {
+                                            <span class="text-warning">&#9733;</span> @* filled star *@
+                                        }
+                                        else
+                                        {
+                                            <span class="text-secondary">&#9733;</span> @* empty star *@
+                                        }
+                                    }
+                                </div>
+                                @if (!string.IsNullOrEmpty(review.Comment))
+                                {
+                                    <p>@review.Comment</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No reviews yet. Be the first to leave a review!</p>
+                }
             </div>
         </div>
     </div>
