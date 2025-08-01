@@ -13,5 +13,7 @@ namespace Orpheus.Core.DTOs
         public string Status { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();
+        public string? PaymentMethod { get; set; }
+        public string? CardNumber { get; set; }
     }
 }

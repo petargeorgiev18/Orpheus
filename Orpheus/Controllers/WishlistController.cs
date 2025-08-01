@@ -25,7 +25,7 @@ namespace Orpheus.Controllers
 
             var wishlistItems = await wishlistService.GetWishlistItemsAsync(userId);
 
-            var model = wishlistItems.Select(i => new InstrumentViewModel
+            var model = wishlistItems.Select(i => new ItemViewModel
             {
                 Id = i.Id,
                 Name = i.Name,

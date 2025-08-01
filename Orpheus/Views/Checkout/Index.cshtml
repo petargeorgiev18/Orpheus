@@ -41,14 +41,37 @@
 
     <div class="col-md-3">
         <label asp-for="PaymentMethod" class="form-label"></label>
-        <select asp-for="PaymentMethod" class="form-select">
+        <select asp-for="PaymentMethod" class="form-select" id="PaymentMethod">
             <option value="CreditCard">Credit Card</option>
-            <option value="PayPal">PayPal</option>
             <option value="CashOnDelivery">Cash on Delivery</option>
         </select>
         <span asp-validation-for="PaymentMethod" class="text-danger"></span>
     </div>
 
+    <div id="cardSection" style="display: none;">
+        <div class="col-md-6">
+            <label asp-for="CardNumber" class="form-label"></label>
+            <input asp-for="CardNumber" class="form-control" />
+            <span asp-validation-for="CardNumber" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="ExpiryMonth" class="form-label"></label>
+            <input asp-for="ExpiryMonth" class="form-control" />
+            <span asp-validation-for="ExpiryMonth" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="ExpiryYear" class="form-label"></label>
+            <input asp-for="ExpiryYear" class="form-control" />
+            <span asp-validation-for="ExpiryYear" class="text-danger"></span>
+        </div>
+        <div class="col-md-3">
+            <label asp-for="CVV" class="form-label"></label>
+            <input asp-for="CVV" class="form-control" />
+            <span asp-validation-for="CVV" class="text-danger"></span>
+        </div>
+    </div>
+
+    <!-- Cart Summary -->
     <div class="col-12 mt-4">
         <h4>Your Cart</h4>
         @if (!Model.CartItems.Any())
@@ -91,4 +114,14 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function toggleCardFields() {
+            const method = document.getElementById("PaymentMethod").value;
+            const section = document.getElementById("cardSection");
+            section.style.display = method === "CreditCard" ? "flex" : "none";
+        }
+
+        document.getElementById("PaymentMethod").addEventListener("change", toggleCardFields);
+        window.onload = toggleCardFields;
+    </script>
 }

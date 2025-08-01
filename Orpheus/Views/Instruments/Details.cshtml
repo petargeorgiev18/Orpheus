@@ -1,28 +1,34 @@
-﻿@model Orpheus.ViewModels.InstrumentViewModel
+﻿@model Orpheus.ViewModels.ItemViewModel
 
 @{
     ViewData["Title"] = Model.Name;
-    var addToWishlistUrl = Url.Action("AddToWishlist", "Wishlist", new { id = Model.Id });
+
+    bool hasRealImages = Model.Images != null && Model.Images.Any(img => !img.Contains("/images/default-image.png"));
+    bool multipleRealImages = Model.Images != null && Model.Images.Count(img => !img.Contains("/images/default-image.png")) > 1;
+    string galleryAttribute = multipleRealImages ? "instrumentGallery" : "";
 }
 
 <div class="container mt-4">
     <div class="row">
-        <!-- Images -->
         <div class="col-md-6">
             @if (Model.Images != null && Model.Images.Any())
             {
-                <!-- Carousel -->
-                <div id="imageCarousel" class="carousel slide">
-                    <div class="carousel-inner rounded shadow">
+                <div id="imageCarousel" class="carousel slide rounded shadow" data-bs-interval="false" data-bs-ride="false">
+                    <div class="carousel-inner">
                         @for (int i = 0; i < Model.Images.Count; i++)
                         {
+                            var imgUrl = Model.Images[i];
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="@Model.Images[i]" alt="@Model.Name" class="d-block w-100" style="max-height: 400px; object-fit: contain;" />
+                                <a href="@imgUrl" class="glightbox"
+                                @(galleryAttribute != "" ? $"data-gallery=\"{galleryAttribute}\"" : "")
+                                   data-title="@Model.Name">
+                                    <img src="@imgUrl" alt="@Model.Name" class="d-block w-100" style="max-height: 400px; object-fit: contain;" />
+                                </a>
                             </div>
                         }
                     </div>
 
-                    @if (Model.Images.Count > 1)
+                    @if (multipleRealImages)
                     {
                         <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -35,16 +41,16 @@
                     }
                 </div>
 
-                <!-- Thumbnails -->
                 <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
                     @for (int i = 0; i < Model.Images.Count; i++)
                     {
-                        <img src="@Model.Images[i]"
-                             class="img-thumbnail"
-                             style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
-                             data-bs-target="#imageCarousel"
-                             data-bs-slide-to="@i"
-                        @(i == 0 ? "aria-current=\"true\"" : "") />
+                        var imgUrl = Model.Images[i];
+                        <a href="@imgUrl" class="glightbox img-thumbnail p-0"
+                           style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                        @(galleryAttribute != "" ? $"data-gallery=\"{galleryAttribute}\"" : "")
+                           data-title="@Model.Name" data-glightbox-open="false">
+                            <img src="@imgUrl" alt="Thumbnail @i" style="width: 100%; height: 100%; object-fit: cover;" />
+                        </a>
                     }
                 </div>
             }
@@ -54,7 +60,6 @@
             }
         </div>
 
-        <!-- Details -->
         <div class="col-md-6">
             <h1>@Model.Name</h1>
             <h4 class="text-muted">@Model.BrandName</h4>
@@ -63,22 +68,71 @@
             <h3 class="text-primary">Price: @Model.Price.ToString("F2") BGN</h3>
 
             <div class="mt-4">
-                <a asp-action="All" asp-controller="Instruments" class="btn btn-secondary me-2">
-                    ← Back to list
-                </a>
-
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
-                    <form asp-action="AddToCart" asp-controller="Cart" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    <form method="post" asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-success me-2">Add to Cart</button>
                     </form>
-                    <form action="@addToWishlistUrl" method="post" class="d-inline">
+
+                    <form method="post" asp-controller="Wishlist" asp-action="AddToWishlist" asp-route-id="@Model.Id" class="d-inline">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-outline-primary">Add to Favorites</button>
+                        <button type="submit" class="btn btn-outline-primary" title="Add to Wishlist">
+                            <i class="bi bi-heart"></i>
+                        </button>
                     </form>
                 }
+
+                <a asp-action="All" asp-controller="Instruments" class="btn btn-outline-secondary mt-3 d-block">
+                    ← Back to list
+                </a>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const hasMultipleRealImages = @multipleRealImages.ToString().ToLower();
+
+            const carouselElement = document.querySelector('#imageCarousel');
+            if (carouselElement) {
+                if (hasMultipleRealImages === "true") {
+                    let carousel = bootstrap.Carousel.getInstance(carouselElement);
+                    if (!carousel) {
+                        carousel = new bootstrap.Carousel(carouselElement, {
+                            interval: false,
+                            wrap: false,
+                            keyboard: true
+                        });
+                    } else {
+                        carousel.pause();
+                    }
+                } else {
+                    const carousel = bootstrap.Carousel.getInstance(carouselElement);
+                    if (carousel) {
+                        carousel.dispose();
+                    }
+                }
+            }
+
+            const lightbox = GLightbox({
+                selector: '.glightbox',
+                loop: hasMultipleRealImages === "true",
+                zoomable: true,
+                height: '80%',
+                width: '80%'
+            });
+
+            if (hasMultipleRealImages === "false") {
+                lightbox.on('open', () => {
+                    const prevBtn = document.querySelector('.gprev');
+                    const nextBtn = document.querySelector('.gnext');
+                    if (prevBtn) prevBtn.style.display = 'none';
+                    if (nextBtn) nextBtn.style.display = 'none';
+                });
+            }
+        });
+    </script>
+}

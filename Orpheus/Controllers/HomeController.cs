@@ -30,7 +30,7 @@ namespace Orpheus.Controllers
 
             var model = new HomeViewModel
             {
-                FeaturedInstruments = instruments.Select(i => new InstrumentViewModel
+                FeaturedInstruments = instruments.Select(i => new ItemViewModel
                 {
                     Id = i.Id,
                     Name = i.Name,
@@ -43,7 +43,7 @@ namespace Orpheus.Controllers
                         .FirstOrDefault()?.Url ?? "/images/default-image.png",
                     Images = i.Images.Select(img => img.Url).ToList()
                 }),
-                FeaturedAlbums = albums.Select(a => new InstrumentViewModel
+                FeaturedAlbums = albums.Select(a => new ItemViewModel
                 {
                     Id = a.Id,
                     Name = a.Name,

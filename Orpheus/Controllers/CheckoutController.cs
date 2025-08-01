@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Orpheus.Core.DTOs;
 using Orpheus.Core.Interfaces;
 using Orpheus.ViewModels;
 using System.Security.Claims;
@@ -53,6 +54,21 @@ namespace Orpheus.Controllers
 
             var cartItems = await cartService.GetCartItemsAsync(userId);
 
+            if (!ModelState.IsValid)
+            {
+                model.CartItems = cartItems.Select(ci => new CartItemViewModel
+                {
+                    CartItemId = ci.CartItemId,
+                    ItemId = ci.ItemId,
+                    Name = ci.Name,
+                    ImageUrl = ci.ImageUrl,
+                    Price = ci.Price,
+                    Quantity = ci.Quantity
+                }).ToList();
+
+                return View("Index", model);
+            }
+
             if (!cartItems.Any())
             {
                 ModelState.AddModelError("", "Your cart is empty.");
@@ -61,10 +77,20 @@ namespace Orpheus.Controllers
 
             var totalAmount = cartItems.Sum(ci => ci.Price * ci.Quantity);
 
-            var checkoutDto = new Core.DTOs.CheckoutDto
+            var checkoutDto = new CheckoutDto
             {
                 UserId = userId,
                 TotalAmount = totalAmount,
+                FullName = model.FullName,
+                Address = model.Address,
+                City = model.City,
+                PostalCode = model.PostalCode,
+                PhoneNumber = model.PhoneNumber,
+                PaymentMethod = model.PaymentMethod,
+                CardNumber = model.PaymentMethod == "CreditCard" ? model.CardNumber : null,
+                ExpiryMonth = model.PaymentMethod == "CreditCard" ? model.ExpiryMonth : null,
+                ExpiryYear = model.PaymentMethod == "CreditCard" ? model.ExpiryYear : null,
+                CVV = model.PaymentMethod == "CreditCard" ? model.CVV : null,
                 Items = cartItems.Select(ci => new Core.DTOs.CheckoutItemDto
                 {
                     ItemId = ci.ItemId,
@@ -82,6 +108,7 @@ namespace Orpheus.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", ex.Message);
+
                 model.CartItems = cartItems.Select(ci => new CartItemViewModel
                 {
                     CartItemId = ci.CartItemId,
@@ -91,6 +118,7 @@ namespace Orpheus.Controllers
                     Price = ci.Price,
                     Quantity = ci.Quantity
                 }).ToList();
+
                 return View("Index", model);
             }
         }
