@@ -1,143 +1,143 @@
 ﻿@model IEnumerable<Orpheus.ViewModels.ItemViewModel>
 
 @{
-	ViewData["Title"] = "All Instruments";
-	var currentSearch = ViewBag.SearchTerm ?? "";
-	var currentSort = ViewBag.Sort ?? "";
-	int currentPage = ViewBag.CurrentPage ?? 1;
-	int totalPages = ViewBag.TotalPages ?? 1;
-	string selectedCategory = ViewBag.Category ?? "";
-	string selectedBrand = ViewBag.Brand ?? "";
-	string selectedPrice = ViewBag.Price ?? "";
+    ViewData["Title"] = "All Instruments";
+    var currentSearch = ViewBag.SearchTerm ?? "";
+    var currentSort = ViewBag.Sort ?? "";
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    string selectedCategory = ViewBag.Category ?? "";
+    string selectedBrand = ViewBag.Brand ?? "";
+    string selectedPrice = ViewBag.Price ?? "";
+    bool hasItems = ViewBag.HasItems ?? Model.Any();
 }
 
 <div class="container mt-4">
-	<h2 class="mb-4 text-center text-primary">🎸 Browse Our Instruments</h2>
+    <h2 class="mb-4 text-center text-primary">🎸 Browse Our Instruments</h2>
 
-	<!-- Combined Filter + Sort Form -->
-	<form asp-action="All" asp-controller="Instruments" method="get" class="row g-2 mb-4 justify-content-center">
-		<div class="col-md-5">
-			<input type="text" name="searchTerm" class="form-control"
-				   placeholder="Search by name or brand..." value="@currentSearch" />
-		</div>
+    <form asp-action="All" asp-controller="Instruments" method="get" class="row g-2 mb-4 justify-content-center">
+        <div class="col-md-5">
+            <input type="text" name="searchTerm" class="form-control"
+                   placeholder="Search by name or brand..." value="@currentSearch" />
+        </div>
 
+        <div class="col-md-2">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                <option value="Guitars" selected="@(selectedCategory == "Guitars")">Guitars</option>
+                <option value="Drums" selected="@(selectedCategory == "Drums")">Drums</option>
+                <option value="Keyboards" selected="@(selectedCategory == "Keyboards")">Keyboards</option>
+                <option value="Other" selected="@(selectedCategory == "Other")">Other</option>
+            </select>
+        </div>
 
-		<div class="col-md-2">
-			<select name="category" class="form-select">
-				<option value="">All Categories</option>
-				<option value="Guitars" selected="@(selectedCategory == "Guitars")">Guitars</option>
-				<option value="Drums" selected="@(selectedCategory == "Drums")">Drums</option>
-				<option value="Keyboards" selected="@(selectedCategory == "Keyboards")">Keyboards</option>
-				<option value="Other" selected="@(selectedCategory == "Other")">Other</option>
-			</select>
-		</div>
+        <div class="col-md-2">
+            <select name="brand" class="form-select">
+                <option value="">All Brands</option>
+                <option value="Fender" selected="@(selectedBrand == "Fender")">Fender</option>
+                <option value="Gibson" selected="@(selectedBrand == "Gibson")">Gibson</option>
+                <option value="Yamaha" selected="@(selectedBrand == "Yamaha")">Yamaha</option>
+                <option value="Other" selected="@(selectedBrand == "Other")">Other</option>
+            </select>
+        </div>
 
-		<div class="col-md-2">
-			<select name="brand" class="form-select">
-				<option value="">All Brands</option>
-				<option value="Fender" selected="@(selectedBrand == "Fender")">Fender</option>
-				<option value="Gibson" selected="@(selectedBrand == "Gibson")">Gibson</option>
-				<option value="Yamaha" selected="@(selectedBrand == "Yamaha")">Yamaha</option>
-				<option value="Other" selected="@(selectedBrand == "Other")">Other</option>
-			</select>
-		</div>
+        <div class="col-md-2">
+            <select name="price" class="form-select">
+                <option value="">All Prices</option>
+                <option value="low" selected="@(selectedPrice == "low")">Under 200 BGN</option>
+                <option value="mid" selected="@(selectedPrice == "mid")">200 - 1000 BGN</option>
+                <option value="high" selected="@(selectedPrice == "high")">1000+ BGN</option>
+            </select>
+        </div>
 
-		<div class="col-md-2">
-			<select name="price" class="form-select">
-				<option value="">All Prices</option>
-				<option value="low" selected="@(selectedPrice == "low")">Under 200 BGN</option>
-				<option value="mid" selected="@(selectedPrice == "mid")">200 - 1000 BGN</option>
-				<option value="high" selected="@(selectedPrice == "high")">1000+ BGN</option>
-			</select>
-		</div>
+        <div class="col-md-2">
+            <select name="sort" class="form-select">
+                <option value="">Sort by</option>
+                <option value="priceAsc" selected="@(currentSort == "priceAsc")">Price: Low to High</option>
+                <option value="priceDesc" selected="@(currentSort == "priceDesc")">Price: High to Low</option>
+            </select>
+        </div>
 
-		<div class="col-md-2">
-			<select name="sort" class="form-select">
-				<option value="">Sort by</option>
-				<option value="priceAsc" selected="@(currentSort == "priceAsc")">Price: Low to High</option>
-				<option value="priceDesc" selected="@(currentSort == "priceDesc")">Price: High to Low</option>
-			</select>
-		</div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Apply</button>
+        </div>
+    </form>
 
-		<div class="col-auto">
-			<button type="submit" class="btn btn-outline-primary">Apply</button>
-		</div>
-	</form>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @if (!Model.Any())
+        {
+            <div class="col-12">
+                <p class="text-center text-muted">No instruments found.</p>
+            </div>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@item.Name</h5>
+                            <h6 class="text-muted">@item.BrandName</h6>
+                            <p class="card-text flex-grow-1">@item.Description</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <strong class="text-primary">Price: @item.Price.ToString("F2") BGN</strong>
+                                <a asp-controller="Instruments" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
+                                    Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
 
-	<!-- Instruments Grid -->
-	<div class="row row-cols-1 row-cols-md-3 g-4">
-		@if (!Model.Any())
-		{
-			<div class="col-12">
-				<p class="text-center text-muted">No instruments found.</p>
-			</div>
-		}
-		else
-		{
-			foreach (var item in Model)
-			{
-				<div class="col">
-					<div class="card h-100 shadow-sm">
-						<img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" style="height: 200px; object-fit: cover;" />
-						<div class="card-body d-flex flex-column">
-							<h5 class="card-title">@item.Name</h5>
-							<h6 class="text-muted">@item.BrandName</h6>
-							<p class="card-text flex-grow-1">@item.Description</p>
-							<div class="mt-auto d-flex justify-content-between align-items-center">
-								<strong class="text-primary">Price: @item.Price.ToString("F2") BGN</strong>
-								<a asp-controller="Instruments" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">
-									Details
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			}
-		}
-	</div>
+    @if (totalPages >= 1)
+    {
+        <div class="text-center mt-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
 
-	<!-- Pagination -->
-	<div class="text-center mt-4">
-		<nav aria-label="Page navigation">
-			<ul class="pagination justify-content-center">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@(currentPage == 1 ? "#" : Url.Action("All", new {
+                            page = currentPage - 1,
+                            searchTerm = currentSearch,
+                            category = selectedCategory,
+                            brand = selectedBrand,
+                            price = selectedPrice,
+                            sort = currentSort
+                        }))">Previous</a>
+                    </li>
 
-				<li class="page-item @(currentPage == 1 ? "disabled" : "")">
-					<a class="page-link" href="@Url.Action("All", new {
-						page = currentPage - 1,
-						searchTerm = currentSearch,
-						category = selectedCategory,
-						brand = selectedBrand,
-						price = selectedPrice,
-						sort = currentSort
-					})">Previous</a>
-				</li>
+                    @for (int i = 1; i <= totalPages; i++)
+                    {
+                        <li class="page-item @(currentPage == i ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("All", new {
+                                page = i,
+                                searchTerm = currentSearch,
+                                category = selectedCategory,
+                                brand = selectedBrand,
+                                price = selectedPrice,
+                                sort = currentSort
+                            })">@i</a>
+                        </li>
+                    }
 
-				@for (int i = 1; i <= totalPages; i++)
-				{
-					<li class="page-item @(currentPage == i ? "active" : "")">
-						<a class="page-link" href="@Url.Action("All", new {
-							page = i,
-							searchTerm = currentSearch,
-							category = selectedCategory,
-							brand = selectedBrand,
-							price = selectedPrice,
-							sort = currentSort
-						})">@i</a>
-					</li>
-				}
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a class="page-link" href="@(currentPage == totalPages ? "#" : Url.Action("All", new {
+                            page = currentPage + 1,
+                            searchTerm = currentSearch,
+                            category = selectedCategory,
+                            brand = selectedBrand,
+                            price = selectedPrice,
+                            sort = currentSort
+                        }))">Next</a>
+                    </li>
 
-				<li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-					<a class="page-link" href="@Url.Action("All", new {
-						page = currentPage + 1,
-						searchTerm = currentSearch,
-						category = selectedCategory,
-						brand = selectedBrand,
-						price = selectedPrice,
-						sort = currentSort
-					})">Next</a>
-				</li>
-
-			</ul>
-		</nav>
-	</div>
+                </ul>
+            </nav>
+        </div>
+    }
 </div>

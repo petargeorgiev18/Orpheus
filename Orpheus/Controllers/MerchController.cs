@@ -8,10 +8,12 @@ namespace Orpheus.Controllers
     public class MerchController : Controller
     {
         private readonly IMerchService merchService;
+        private readonly IReviewService reviewService;
 
-        public MerchController(IMerchService merchService)
+        public MerchController(IMerchService merchService, IReviewService reviewService)
         {
             this.merchService = merchService;
+            this.reviewService = reviewService;
         }
 
         [HttpGet]
@@ -27,7 +29,8 @@ namespace Orpheus.Controllers
 
             if (!string.IsNullOrWhiteSpace(price))
             {
-                merch = price.ToLower() switch
+                price = price.ToLower();
+                merch = price switch
                 {
                     "low" => merch.Where(i => i.Price < 20),
                     "mid" => merch.Where(i => i.Price >= 20 && i.Price <= 60),
@@ -36,7 +39,8 @@ namespace Orpheus.Controllers
                 };
             }
 
-            merch = sort?.ToLower() switch
+            sort = sort?.ToLower();
+            merch = sort switch
             {
                 "priceasc" => merch.OrderBy(i => i.Price),
                 "pricedesc" => merch.OrderByDescending(i => i.Price),
@@ -46,10 +50,7 @@ namespace Orpheus.Controllers
             int totalItems = merch.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            if (page < 1)
-                page = 1;
-            if (totalPages > 0 && page > totalPages)
-                page = totalPages;
+            page = Math.Clamp(page, 1, totalPages > 0 ? totalPages : 1);
 
             var itemsOnPage = merch
                 .Skip((page - 1) * pageSize)
@@ -61,7 +62,10 @@ namespace Orpheus.Controllers
                     Description = i.Description,
                     Price = i.Price,
                     BrandName = i.Brand?.Name ?? "Unknown",
-                    ImageUrl = i.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
+                    ImageUrl = i.Images
+                        .OrderByDescending(img => img.IsMain)
+                        .Select(img => img.Url)
+                        .FirstOrDefault() ?? "/images/default-image.png"
                 })
                 .ToList();
 
@@ -70,6 +74,7 @@ namespace Orpheus.Controllers
             ViewBag.SearchTerm = searchTerm ?? "";
             ViewBag.Sort = sort ?? "";
             ViewBag.Price = price ?? "";
+
             return View(itemsOnPage);
         }
 
@@ -83,6 +88,8 @@ namespace Orpheus.Controllers
                 return NotFound();
             }
 
+            var reviews = await reviewService.GetReviewsByItemIdAsync(item.Id);
+
             var viewModel = new ItemViewModel
             {
                 Id = item.Id,
@@ -90,7 +97,14 @@ namespace Orpheus.Controllers
                 Description = item.Description,
                 Price = item.Price,
                 BrandName = item.Brand?.Name ?? "Unknown",
-                Images = item.Images.Select(i => i.Url).ToList()
+                Images = item.Images.OrderByDescending(i => i.IsMain).Select(i => i.Url).ToList(),
+                Reviews = reviews.Select(r => new ReviewViewModel
+                {
+                    UserFullName = r.UserFullName!,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt
+                }).ToList()
             };
 
             return View(viewModel);

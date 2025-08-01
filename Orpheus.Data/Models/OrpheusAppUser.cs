@@ -9,13 +9,13 @@ namespace Orpheus.Data.Models
         {
             Id = Guid.NewGuid();
         }        
-        [MaxLength(StreetMaxLength)]
+        [MaxLength(AddressMaxLength)]
         public string? Street { get; set; }
         [MaxLength(CityMaxLength)]
         public string? City { get; set; }
         [MaxLength(CountryMaxLength)]
         public string? Country { get; set; } = null!;
-        [MaxLength(ZipCodeMaxLength)]
+        [MaxLength(PostalCodeMaxLength)]
         public string? ZipCode { get; set; } = null!;
         public Cart? Cart { get; set; } = null!;
         public Wishlist? Wishlist { get; set; } = null!;

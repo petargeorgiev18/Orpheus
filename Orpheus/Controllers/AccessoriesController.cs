@@ -8,10 +8,12 @@ namespace Orpheus.Controllers
     public class AccessoriesController : Controller
     {
         private readonly IAccessoryService accessoryService;
+        private readonly IReviewService reviewService;
 
-        public AccessoriesController(IAccessoryService accessoryService)
+        public AccessoriesController(IAccessoryService accessoryService, IReviewService reviewService)
         {
             this.accessoryService = accessoryService;
+            this.reviewService = reviewService;
         }
 
         [HttpGet]
@@ -19,7 +21,6 @@ namespace Orpheus.Controllers
         {
             var accessories = await accessoryService.GetAvailableAccessoriesAsync();
 
-            // Filtering: search
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 accessories = accessories
@@ -27,7 +28,6 @@ namespace Orpheus.Controllers
                              || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
-            // Filtering: price
             if (!string.IsNullOrEmpty(price))
             {
                 accessories = price.ToLower() switch
@@ -43,7 +43,7 @@ namespace Orpheus.Controllers
             {
                 "priceasc" => accessories.OrderBy(i => i.Price),
                 "pricedesc" => accessories.OrderByDescending(i => i.Price),
-                _ => accessories.OrderBy(i => i.Name) // Default sort by name
+                _ => accessories.OrderBy(i => i.Name)
             };
 
             int totalItems = accessories.Count();
@@ -88,6 +88,8 @@ namespace Orpheus.Controllers
                 return NotFound();
             }
 
+            var reviews = await reviewService.GetReviewsByItemIdAsync(item.Id);
+
             var viewModel = new ItemViewModel
             {
                 Id = item.Id,
@@ -98,7 +100,14 @@ namespace Orpheus.Controllers
                 Images = item.Images
                     .OrderByDescending(i => i.IsMain)
                     .Select(i => i.Url)
-                    .ToList()
+                    .ToList(),
+                Reviews = reviews.Select(r => new ReviewViewModel
+                {
+                    UserFullName = r.UserFullName!,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt
+                }).ToList()
             };
 
             return View(viewModel);

@@ -8,10 +8,11 @@ namespace Orpheus.Controllers
     public class AlbumsController : Controller
     {
         private readonly IAlbumService albumService;
-
-        public AlbumsController(IAlbumService albumService)
+        private readonly IReviewService reviewService;
+        public AlbumsController(IAlbumService albumService, IReviewService reviewService)
         {
             this.albumService = albumService;
+            this.reviewService = reviewService;
         }
 
         [HttpGet]
@@ -88,6 +89,8 @@ namespace Orpheus.Controllers
                 return NotFound();
             }
 
+            var reviews = await reviewService.GetReviewsByItemIdAsync(item.Id);
+
             var viewModel = new ItemViewModel
             {
                 Id = item.Id,
@@ -95,8 +98,14 @@ namespace Orpheus.Controllers
                 Description = item.Description,
                 Price = item.Price,
                 BrandName = item.Brand?.Name ?? "Unknown Brand",
-                Images = item.Images.OrderByDescending(img => img.IsMain)
-                    .Select(i => i.Url).ToList()
+                Images = item.Images.OrderByDescending(img => img.IsMain).Select(i => i.Url).ToList(),
+                Reviews = reviews.Select(r => new ReviewViewModel
+                {
+                    UserFullName = r.UserFullName!,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt
+                }).ToList()
             };
 
             return View(viewModel);
