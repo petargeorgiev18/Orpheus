@@ -44,6 +44,7 @@ namespace Orpheus.Core.Implementations
                 .Include(i => i.Category)
                 .Include(i => i.Images)
                 .Include(i => i.Brand)
+                .OrderBy(i=>i.Reviews.Count)
                 .Take(count)
                 .ToListAsync();
         }

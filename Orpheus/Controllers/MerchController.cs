@@ -54,7 +54,7 @@ namespace Orpheus.Controllers
             var itemsOnPage = merch
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(i => new InstrumentViewModel
+                .Select(i => new ItemViewModel
                 {
                     Id = i.Id,
                     Name = i.Name,
@@ -83,7 +83,7 @@ namespace Orpheus.Controllers
                 return NotFound();
             }
 
-            var viewModel = new InstrumentViewModel
+            var viewModel = new ItemViewModel
             {
                 Id = item.Id,
                 Name = item.Name,

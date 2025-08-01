@@ -1,6 +1,6 @@
 ﻿namespace Orpheus.ViewModels
 {
-    public class InstrumentViewModel
+    public class ItemViewModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Orpheus.ViewModels
+﻿namespace Orpheus.ViewModels
 {
     public class OrderViewModel
     {
@@ -9,7 +6,8 @@ namespace Orpheus.ViewModels
         public DateTime OrderDate { get; set; }
         public string Status { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
-
         public List<OrderItemViewModel> Items { get; set; } = new();
+        public string? PaymentMethod { get; set; }
+        public string? CardNumber { get; set; }
     }
 }

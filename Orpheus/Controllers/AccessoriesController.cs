@@ -19,6 +19,7 @@ namespace Orpheus.Controllers
         {
             var accessories = await accessoryService.GetAvailableAccessoriesAsync();
 
+            // Filtering: search
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 accessories = accessories
@@ -26,6 +27,7 @@ namespace Orpheus.Controllers
                              || (i.Brand != null && i.Brand.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)));
             }
 
+            // Filtering: price
             if (!string.IsNullOrEmpty(price))
             {
                 accessories = price.ToLower() switch
@@ -41,21 +43,19 @@ namespace Orpheus.Controllers
             {
                 "priceasc" => accessories.OrderBy(i => i.Price),
                 "pricedesc" => accessories.OrderByDescending(i => i.Price),
-                _ => accessories.OrderBy(i => i.Name)
+                _ => accessories.OrderBy(i => i.Name) // Default sort by name
             };
 
             int totalItems = accessories.Count();
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
-            if (page < 1)
-                page = 1;
-            if (totalPages > 0 && page > totalPages)
-                page = totalPages;
+            page = Math.Clamp(page, 1, totalPages > 0 ? totalPages : 1);
 
             var itemsOnPage = accessories
+                .OrderBy(i=>i.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(i => new InstrumentViewModel
+                .Select(i => new ItemViewModel
                 {
                     Id = i.Id,
                     Name = i.Name,
@@ -63,9 +63,9 @@ namespace Orpheus.Controllers
                     Price = i.Price,
                     BrandName = i.Brand?.Name ?? "Unknown",
                     ImageUrl = i.Images
-                                .OrderByDescending(img => img.IsMain)
-                                .Select(img => img.Url)
-                                .FirstOrDefault() ?? "/images/default-image.png"
+                        .OrderByDescending(img => img.IsMain)
+                        .Select(img => img.Url)
+                        .FirstOrDefault() ?? "/images/default-image.png"
                 })
                 .ToList();
 
@@ -88,7 +88,7 @@ namespace Orpheus.Controllers
                 return NotFound();
             }
 
-            var viewModel = new InstrumentViewModel
+            var viewModel = new ItemViewModel
             {
                 Id = item.Id,
                 Name = item.Name,
@@ -96,9 +96,9 @@ namespace Orpheus.Controllers
                 Price = item.Price,
                 BrandName = item.Brand?.Name ?? "Unknown",
                 Images = item.Images
-                            .OrderByDescending(i => i.IsMain)
-                            .Select(i => i.Url)
-                            .ToList()
+                    .OrderByDescending(i => i.IsMain)
+                    .Select(i => i.Url)
+                    .ToList()
             };
 
             return View(viewModel);

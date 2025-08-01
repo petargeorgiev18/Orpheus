@@ -30,6 +30,8 @@ namespace Orpheus.Controllers
                 OrderDate = o.OrderDate,
                 Status = o.Status,
                 TotalAmount = o.TotalAmount,
+                PaymentMethod = o.PaymentMethod,
+                CardNumber = o.CardNumber,
                 Items = o.Items.Select(i => new OrderItemViewModel
                 {
                     Name = i.Name,

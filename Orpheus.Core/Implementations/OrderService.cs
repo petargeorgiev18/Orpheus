@@ -31,9 +31,18 @@ namespace Orpheus.Core.Implementations
                 UserId = model.UserId,
                 OrderDate = DateTime.UtcNow,
                 OrderStatus = OrdersStatus.Pending,
-                PaymentStatus = PaymentStatus.Pending,
+                PaymentStatus = PaymentStatus.Paid,
                 Amount = model.TotalAmount,
                 PaidAt = DateTime.MinValue,
+                FullName = model.FullName,
+                Address = model.Address,
+                City = model.City,
+                PostalCode = model.PostalCode,
+                PhoneNumber = model.PhoneNumber,
+                PaymentMethod = model.PaymentMethod,
+                CardNumber = model.PaymentMethod == "CreditCard" && !string.IsNullOrEmpty(model.CardNumber)
+        ? model.CardNumber[^4..] // last 4 digits
+        : null,
                 OrderItems = model.Items.Select(item => new OrderItem
                 {
                     Id = Guid.NewGuid(),
@@ -42,6 +51,7 @@ namespace Orpheus.Core.Implementations
                     Price = item.Price,
                 }).ToList()
             };
+
 
             await orderRepository.AddWithoutSavingAsync(order);
             await orderRepository.SaveChangesAsync();
@@ -65,6 +75,8 @@ namespace Orpheus.Core.Implementations
                 OrderDate = order.OrderDate,
                 Status = order.OrderStatus.ToString(),
                 TotalAmount = order.Amount,
+                PaymentMethod = order.PaymentMethod,
+                CardNumber = order.CardNumber,
                 Items = order.OrderItems.Select(oi => new OrderItemDto
                 {
                     Name = oi.Item.Name,

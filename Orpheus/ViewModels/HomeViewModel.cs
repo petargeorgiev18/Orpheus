@@ -2,7 +2,7 @@
 {
     public class HomeViewModel
     {
-        public IEnumerable<InstrumentViewModel> FeaturedInstruments { get; set; } = new List<InstrumentViewModel>();
-        public IEnumerable<InstrumentViewModel> FeaturedAlbums { get; set; } = new List<InstrumentViewModel>();
+        public IEnumerable<ItemViewModel> FeaturedInstruments { get; set; } = new List<ItemViewModel>();
+        public IEnumerable<ItemViewModel> FeaturedAlbums { get; set; } = new List<ItemViewModel>();
     }
 }

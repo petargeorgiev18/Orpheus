@@ -19,7 +19,18 @@ else
                 <strong>Order ID:</strong> @order.OrderId <br />
                 <strong>Date:</strong> @order.OrderDate.ToShortDateString() <br />
                 <strong>Status:</strong> @order.Status <br />
-                <strong>Total:</strong> @order.TotalAmount.ToString("C")
+                <strong>Total:</strong> @order.TotalAmount.ToString("C") <br />
+
+                @if (order.PaymentMethod == "CreditCard" && !string.IsNullOrEmpty(order.CardNumber))
+                {
+                    var last4 = order.CardNumber.Length >= 4
+                    ? order.CardNumber[^4..]  // same as .Substring(length - 4)
+                    : order.CardNumber;
+
+                    <strong>Card:</strong> @("************" + last4)
+
+                    <br />
+                }
             </div>
             <div class="card-body">
                 <table class="table">
@@ -27,7 +38,8 @@ else
                         <tr>
                             <th>Item</th>
                             <th>Qty</th>
-                            <th>Price</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,7 +48,8 @@ else
                             <tr>
                                 <td>@item.Name</td>
                                 <td>@item.Quantity</td>
-                                <td>@item.Price.ToString("C")</td>
+                                <td>@(item.Price.ToString("C"))</td>
+                                <td>@((item.Price * item.Quantity).ToString("C"))</td>
                             </tr>
                         }
                     </tbody>

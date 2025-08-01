@@ -14,9 +14,16 @@ namespace Orpheus.Controllers
             this.instrumentItemService = instrumentItemService;
         }
         [HttpGet]
-        public async Task<IActionResult> All(string? category, string? brand, string? price, string? sort, int page = 1, int pageSize = 6)
+        public async Task<IActionResult> All(string? searchTerm, string? category, string? brand, string? price, string? sort, int page = 1, int pageSize = 6)
         {
             var instruments = await instrumentItemService.GetAvailableInstrumentsAsync();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                instruments = instruments.Where(i =>
+                    i.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    i.Brand?.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) == true);
+            }
 
             if (!string.IsNullOrEmpty(category))
                 instruments = instruments.Where(i => i.Category?.CategoryName.Contains(category, StringComparison.OrdinalIgnoreCase) == true);
@@ -25,6 +32,7 @@ namespace Orpheus.Controllers
                 instruments = instruments.Where(i => i.Brand?.Name.Contains(brand, StringComparison.OrdinalIgnoreCase) == true);
 
             if (!string.IsNullOrEmpty(price))
+            {
                 instruments = price.ToLower() switch
                 {
                     "low" => instruments.Where(i => i.Price < 200),
@@ -32,6 +40,7 @@ namespace Orpheus.Controllers
                     "high" => instruments.Where(i => i.Price > 1000),
                     _ => instruments
                 };
+            }
 
             if (!string.IsNullOrEmpty(sort))
             {
@@ -44,17 +53,14 @@ namespace Orpheus.Controllers
             }
 
             int totalItems = instruments.Count();
-
             int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-            if (page < 1)
-                page = 1;
-            if (totalPages > 0 && page > totalPages)
-                page = totalPages;
+            page = Math.Clamp(page, 1, totalPages == 0 ? 1 : totalPages);
 
             var itemsOnPage = instruments
+                .OrderBy(i=>i.Reviews)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(i => new InstrumentViewModel
+                .Select(i => new ItemViewModel
                 {
                     Id = i.Id,
                     Name = i.Name,
@@ -68,6 +74,10 @@ namespace Orpheus.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.Sort = sort;
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Category = category;
+            ViewBag.Brand = brand;
+            ViewBag.Price = price;
 
             return View(itemsOnPage);
         }
@@ -80,7 +90,7 @@ namespace Orpheus.Controllers
             {
                 return NotFound();
             }
-            var viewModel = new InstrumentViewModel
+            var viewModel = new ItemViewModel
             {
                 Id = item.Id,
                 Name = item.Name,
