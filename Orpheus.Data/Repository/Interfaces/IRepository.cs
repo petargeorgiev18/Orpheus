@@ -18,6 +18,7 @@ namespace Orpheus.Data.Repository.Interfaces
         Task UpdateAsync(TEntity entity);
         Task DeleteAsync(TId id);
         Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> predicate);
+        void RemoveRange(IEnumerable<TEntity> items);
         Task SaveChangesAsync();
     }
 }

@@ -41,8 +41,8 @@ namespace Orpheus.Core.Implementations
                 PhoneNumber = model.PhoneNumber,
                 PaymentMethod = model.PaymentMethod,
                 CardNumber = model.PaymentMethod == "CreditCard" && !string.IsNullOrEmpty(model.CardNumber)
-        ? model.CardNumber[^4..] // last 4 digits
-        : null,
+                        ? model.CardNumber[^4..] 
+                        : null,
                 OrderItems = model.Items.Select(item => new OrderItem
                 {
                     Id = Guid.NewGuid(),
@@ -59,8 +59,6 @@ namespace Orpheus.Core.Implementations
             return order.Id;
         }
 
-
-
         public async Task<List<OrderDto>> GetOrdersByUserAsync(Guid userId)
         {
             var orders = await orderRepository.GetAllAsNoTracking()
@@ -69,7 +67,7 @@ namespace Orpheus.Core.Implementations
                     .ThenInclude(oi => oi.Item)
                 .ToListAsync();
 
-            return orders.Select(order => new OrderDto
+            return orders.OrderByDescending(o=>o.OrderDate).Select(order => new OrderDto
             {
                 OrderId = order.Id,
                 OrderDate = order.OrderDate,

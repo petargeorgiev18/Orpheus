@@ -57,7 +57,7 @@ namespace Orpheus.Data.Repository
 
         public async Task<TEntity?> GetByIdAsync(TId id)
         {
-            return await this.dbSet.FindAsync(id);
+            return await dbSet.FirstOrDefaultAsync(e => EF.Property<TId>(e, "Id").Equals(id));
         }
 
         public async Task SaveChangesAsync()
@@ -74,5 +74,11 @@ namespace Orpheus.Data.Repository
             this.context.Entry(item).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
         }
+
+        public void RemoveRange(IEnumerable<TEntity> items)
+        {
+            dbSet.RemoveRange(items);
+        }
+
     }
 }

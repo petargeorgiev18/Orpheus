@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Orpheus.Core.DTOs;
 using Orpheus.Core.Interfaces;
 using Orpheus.Data.Models.Enums;
 using Orpheus.ViewModels;
@@ -116,6 +118,104 @@ namespace Orpheus.Controllers
             };
 
             return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View("CreateEdit", new CreateEditInstrumentViewModel());
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateEditInstrumentViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("CreateEdit", model);
+            var dto = new CreateEditInstrumentDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                BrandId = model.BrandId,
+                CategoryId = model.CategoryId,
+                ItemType = model.ItemType,
+                ImageUrls = model.ImageUrls
+            };
+            await instrumentItemService.CreateAsync(dto);
+            return RedirectToAction(nameof(All));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var item = await instrumentItemService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+
+            var viewModel = new CreateEditInstrumentViewModel
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                BrandId = item.BrandId,
+                CategoryId = item.Category.Id,
+                ItemType = item.ItemType,
+                ImageUrls = item.Images.Select(i => i.Url).ToList()
+            };
+
+            return View("CreateEdit", viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(CreateEditInstrumentViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("CreateEdit", model);
+            var dto = new CreateEditInstrumentDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                BrandId = model.BrandId,
+                CategoryId = model.CategoryId,
+                ItemType = model.ItemType,
+                ImageUrls = model.ImageUrls
+            };
+            await instrumentItemService.UpdateAsync(dto);
+            return RedirectToAction(nameof(Details), new { id = model.Id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var item = await instrumentItemService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+
+            var viewModel = new ItemViewModel
+            {
+                Id = item.Id,
+                Name = item.Name,
+                BrandName = item.Brand?.Name ?? "Unknown",
+                Price = item.Price,
+                ImageUrl = item.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
+            };
+
+            return View(viewModel);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> ConfirmDelete(Guid id)
+        {
+            await instrumentItemService.DeleteAsync(id);
+            return RedirectToAction(nameof(All));
         }
     }
 }

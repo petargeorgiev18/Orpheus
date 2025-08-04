@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Orpheus.Core.DTOs;
 using Orpheus.Data.Models;
 
 namespace Orpheus.Core.Interfaces
@@ -12,5 +8,8 @@ namespace Orpheus.Core.Interfaces
         Task<IEnumerable<Item>> GetAvailableInstrumentsAsync();
         Task<Item?> GetByIdAsync(Guid id);
         Task<IEnumerable<Item>> GetFeaturedInstrumentsAsync(int count);
+        Task CreateAsync(CreateEditInstrumentDto model);
+        Task UpdateAsync(CreateEditInstrumentDto model);
+        Task DeleteAsync(Guid id);
     }
 }

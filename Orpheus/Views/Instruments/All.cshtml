@@ -15,6 +15,15 @@
 <div class="container mt-4">
     <h2 class="mb-4 text-center text-primary">🎸 Browse Our Instruments</h2>
 
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="text-end mb-3">
+            <a asp-controller="Instruments" asp-action="Create" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add New Instrument
+            </a>
+        </div>
+    }
+
     <form asp-action="All" asp-controller="Instruments" method="get" class="row g-2 mb-4 justify-content-center">
         <div class="col-md-5">
             <input type="text" name="searchTerm" class="form-control"
