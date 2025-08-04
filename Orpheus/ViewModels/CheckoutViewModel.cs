@@ -3,7 +3,7 @@ using static Orpheus.Common.EntityClassesValidation.OrpheusAppUser;
 
 namespace Orpheus.ViewModels
 {
-    public class CheckoutViewModel
+    public class CheckoutViewModel : IValidatableObject
     {
         public List<CartItemViewModel> CartItems { get; set; } = new();
 
@@ -60,7 +60,7 @@ namespace Orpheus.ViewModels
         {
             if (PaymentMethod == "CreditCard")
             {
-                if (string.IsNullOrWhiteSpace(CardNumber))
+                if (string.IsNullOrWhiteSpace(CardNumber) || string.IsNullOrEmpty(CardNumber))
                     yield return new ValidationResult("Card number is required.", new[] { nameof(CardNumber) });
 
                 if (!ExpiryMonth.HasValue)
@@ -69,7 +69,7 @@ namespace Orpheus.ViewModels
                 if (!ExpiryYear.HasValue)
                     yield return new ValidationResult("Expiry year is required.", new[] { nameof(ExpiryYear) });
 
-                if (string.IsNullOrWhiteSpace(CVV))
+                if (string.IsNullOrWhiteSpace(CVV) || string.IsNullOrEmpty(CVV))
                     yield return new ValidationResult("CVV is required.", new[] { nameof(CVV) });
             }
         }

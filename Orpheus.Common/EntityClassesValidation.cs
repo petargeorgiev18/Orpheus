@@ -17,7 +17,8 @@
         public static class Item
         {
             public const int ItemNameMaxLength = 100;
-            public const int ItemDescriptionMaxLength = 500;
+            public const int ItemNameMinLength = 3;
+            public const int ItemDescriptionMaxLength = 400;
             public const double ItemPriceMinValue = 0.01;
             public const double ItemPriceMaxValue = 10000.00;
         }
