@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Orpheus.Core.DTOs;
 using Orpheus.Core.Interfaces;
+using Orpheus.Data.Models;
 using Orpheus.Data.Models.Enums;
+using Orpheus.Data.Repository.Interfaces;
 using Orpheus.ViewModels;
 
 namespace Orpheus.Controllers
@@ -11,12 +15,21 @@ namespace Orpheus.Controllers
     {
         private readonly IInstrumentService instrumentItemService;
         private readonly IReviewService reviewService;
+        private readonly IRepository<Brand, Guid> brandRepo;
+        private readonly IRepository<Category, Guid> categoryRepo;
 
-        public InstrumentsController(IInstrumentService instrumentItemService, IReviewService reviewService)
+        public InstrumentsController(
+            IInstrumentService instrumentItemService,
+            IReviewService reviewService,
+            IRepository<Brand, Guid> brandRepo,
+            IRepository<Category, Guid> categoryRepo)
         {
             this.instrumentItemService = instrumentItemService;
             this.reviewService = reviewService;
+            this.brandRepo = brandRepo;
+            this.categoryRepo = categoryRepo;
         }
+
         [HttpGet]
         public async Task<IActionResult> All(string? searchTerm, string? category, string? brand, string? price, string? sort, int page = 1, int pageSize = 6)
         {
@@ -114,7 +127,7 @@ namespace Orpheus.Controllers
                 Images = item.Images != null && item.Images.Any()
                     ? item.Images.OrderByDescending(img => img.IsMain).Select(img => img.Url).ToList()
                     : new List<string> { "/images/default-image.png" },
-                Reviews = reviewsVm 
+                Reviews = reviewsVm
             };
 
             return View(viewModel);
@@ -122,18 +135,42 @@ namespace Orpheus.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View("CreateEdit", new CreateEditInstrumentViewModel());
+            var viewModel = new CreateEditInstrumentViewModel();
+            await PopulateDropdownsAsync(viewModel);
+            return View("Create", viewModel);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateEditInstrumentViewModel model)
         {
+            var urls = (model.ImageUrlsRaw ?? string.Empty)
+                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(u => u.Trim())
+                .Where(u => !string.IsNullOrEmpty(u))
+                .ToList();
+
+            if (!urls.Any())
+            {
+                urls.Add("/images/default-image.png");
+            }
+
+            model.ImageUrls = urls;
+
+            if (string.IsNullOrWhiteSpace(model.ImageUrlsRaw))
+            {
+                ModelState.AddModelError(nameof(model.ImageUrlsRaw), "Image URLs are required.");
+            }
+
             if (!ModelState.IsValid)
-                return View("CreateEdit", model);
-            var dto = new CreateEditInstrumentDto
+            {
+                await PopulateDropdownsAsync(model);
+                return View("Create", model);
+            }
+
+            var dto = new CreateEditItemDto
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -144,6 +181,7 @@ namespace Orpheus.Controllers
                 ItemType = model.ItemType,
                 ImageUrls = model.ImageUrls
             };
+
             await instrumentItemService.CreateAsync(dto);
             return RedirectToAction(nameof(All));
         }
@@ -164,10 +202,10 @@ namespace Orpheus.Controllers
                 BrandId = item.BrandId,
                 CategoryId = item.Category.Id,
                 ItemType = item.ItemType,
-                ImageUrls = item.Images.Select(i => i.Url).ToList()
             };
 
-            return View("CreateEdit", viewModel);
+            await PopulateDropdownsAsync(viewModel);
+            return View("Edit", viewModel);
         }
 
         [Authorize(Roles = "Admin")]
@@ -175,8 +213,12 @@ namespace Orpheus.Controllers
         public async Task<IActionResult> Edit(CreateEditInstrumentViewModel model)
         {
             if (!ModelState.IsValid)
-                return View("CreateEdit", model);
-            var dto = new CreateEditInstrumentDto
+            {
+                await PopulateDropdownsAsync(model);
+                return View("Edit", model);
+            }
+
+            var dto = new CreateEditItemDto
             {
                 Id = model.Id,
                 Name = model.Name,
@@ -185,8 +227,8 @@ namespace Orpheus.Controllers
                 BrandId = model.BrandId,
                 CategoryId = model.CategoryId,
                 ItemType = model.ItemType,
-                ImageUrls = model.ImageUrls
             };
+
             await instrumentItemService.UpdateAsync(dto);
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
@@ -216,6 +258,25 @@ namespace Orpheus.Controllers
         {
             await instrumentItemService.DeleteAsync(id);
             return RedirectToAction(nameof(All));
+        }
+
+        //Helper method to populate dropdowns for brands and categories
+        private async Task PopulateDropdownsAsync(CreateEditInstrumentViewModel model)
+        {
+            var brands = await brandRepo.GetAllAsNoTracking().ToListAsync();
+            var categories = await categoryRepo.GetAllAsNoTracking().ToListAsync();
+
+            model.Brands = brands.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            });
+
+            model.Categories = categories.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.CategoryName
+            });
         }
     }
 }

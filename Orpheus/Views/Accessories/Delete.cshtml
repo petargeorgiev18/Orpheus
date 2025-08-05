@@ -1,0 +1,24 @@
+﻿@model Orpheus.ViewModels.ItemViewModel
+
+@{
+    ViewData["Title"] = "Confirm Delete";
+}
+
+<h2>Confirm Delete</h2>
+
+<div class="alert alert-warning">
+    <p>Are you sure you want to delete the following accessory?</p>
+</div>
+
+<div>
+    <h4>@Model.Name</h4>
+    <p><strong>Brand:</strong> @Model.BrandName</p>
+    <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
+    <img src="@Model.ImageUrl" alt="@Model.Name" style="max-width:200px; max-height:200px;" />
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" asp-controller="Accessories" class="btn btn-secondary">Cancel</a>
+</form>

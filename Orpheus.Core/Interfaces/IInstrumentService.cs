@@ -8,8 +8,8 @@ namespace Orpheus.Core.Interfaces
         Task<IEnumerable<Item>> GetAvailableInstrumentsAsync();
         Task<Item?> GetByIdAsync(Guid id);
         Task<IEnumerable<Item>> GetFeaturedInstrumentsAsync(int count);
-        Task CreateAsync(CreateEditInstrumentDto model);
-        Task UpdateAsync(CreateEditInstrumentDto model);
+        Task CreateAsync(CreateEditItemDto model);
+        Task UpdateAsync(CreateEditItemDto model);
         Task DeleteAsync(Guid id);
     }
 }

@@ -1,0 +1,69 @@
+﻿@using Orpheus.Data.Models.Enums
+@model Orpheus.ViewModels.CreateEditInstrumentViewModel
+
+@{
+    ViewData["Title"] = "Add Instrument";
+}
+
+<h2 class="mb-4">@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" novalidate>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" placeholder="Enter instrument name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe the instrument"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" type="number" step="0.01" min="0" class="form-control" placeholder="Enter price in USD" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <hr />
+
+    <div class="mb-3">
+        <label asp-for="BrandId" class="form-label"></label>
+        <select asp-for="BrandId" asp-items="Model.Brands" class="form-select">
+            <option value="">-- Select Brand --</option>
+        </select>
+        <span asp-validation-for="BrandId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label"></label>
+        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Item Type</label>
+        <input class="form-control" value="Instrument" readonly />
+        <input type="hidden" asp-for="ItemType" />
+    </div>
+
+
+    <hr />
+
+    <div class="mb-3">
+        <label asp-for="ImageUrlsRaw" class="form-label"></label>
+        <textarea asp-for="ImageUrlsRaw" class="form-control" rows="3" placeholder="Enter image URLs, one per line..."></textarea>
+        <small class="form-text text-muted">Add at least one image URL. First URL will be main image.</small>
+        <span asp-validation-for="ImageUrlsRaw" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add Instrument
+        </button>
+        <a asp-action="All" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>

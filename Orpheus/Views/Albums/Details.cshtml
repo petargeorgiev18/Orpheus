@@ -1,35 +1,40 @@
 ﻿@model Orpheus.ViewModels.ItemViewModel
+@using Orpheus.ViewModels
 
 @{
     ViewData["Title"] = $"{Model.Name} - Album Details";
     bool hasRealImages = Model.Images != null && Model.Images.Any(img => !img.Contains("/images/default-image.png"));
-    bool multipleImages = Model.Images?.Count > 1;
+    bool multipleRealImages = Model.Images != null && Model.Images.Count(img => !img.Contains("/images/default-image.png")) > 1;
+    string galleryAttribute = multipleRealImages ? "albumGallery" : "";
 }
 
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6">
-            @if (hasRealImages)
+            @if (Model.Images != null && Model.Images.Any())
             {
-                <div id="albumCarousel" class="carousel slide rounded shadow" data-bs-ride="false">
+                <div id="imageCarousel" class="carousel slide rounded shadow" data-bs-ride="false">
                     <div class="carousel-inner">
                         @for (int i = 0; i < Model.Images.Count; i++)
                         {
+                            var imgUrl = Model.Images[i];
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <a href="@Model.Images[i]" class="glightbox" data-gallery="albumGallery" data-title="@Model.Name">
-                                    <img src="@Model.Images[i]" class="d-block w-100" style="max-height: 400px; object-fit: cover;" alt="Album Image" />
+                                <a href="@imgUrl" class="glightbox"
+                                @(galleryAttribute != "" ? $"data-gallery=\"{galleryAttribute}\"" : "")
+                                   data-title="@Model.Name">
+                                    <img src="@imgUrl" alt="@Model.Name" class="d-block w-100" style="max-height: 400px; object-fit: cover;" />
                                 </a>
                             </div>
                         }
                     </div>
 
-                    @if (multipleImages)
+                    @if (multipleRealImages)
                     {
-                        <button class="carousel-control-prev" type="button" data-bs-target="#albumCarousel" data-bs-slide="prev">
+                        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
                             <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#albumCarousel" data-bs-slide="next">
+                        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
                             <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
@@ -38,8 +43,12 @@
                     <div class="mt-3 d-flex flex-wrap gap-2 justify-content-center">
                         @for (int i = 0; i < Model.Images.Count; i++)
                         {
-                            <a href="@Model.Images[i]" class="glightbox img-thumbnail p-0" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;" data-gallery="albumGallery" data-title="@Model.Name" data-glightbox-open="false">
-                                <img src="@Model.Images[i]" alt="Thumbnail @i" style="width: 100%; height: 100%; object-fit: cover;" />
+                            var imgUrl = Model.Images[i];
+                            <a href="@imgUrl" class="glightbox img-thumbnail p-0"
+                               style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;"
+                            @(galleryAttribute != "" ? $"data-gallery=\"{galleryAttribute}\"" : "")
+                               data-title="@Model.Name" data-glightbox-open="false">
+                                <img src="@imgUrl" alt="Thumbnail @i" style="width: 100%; height: 100%; object-fit: cover;" />
                             </a>
                         }
                     </div>
@@ -52,13 +61,13 @@
         </div>
 
         <div class="col-md-6">
-            <h2 class="text-primary">@Model.Name</h2>
-            <h5 class="text-muted mb-3">@Model.BrandName</h5>
+            <h1>@Model.Name</h1>
+            <h4 class="text-muted">@Model.BrandName</h4>
             <p>@Model.Description</p>
 
-            <div class="mt-4">
-                <h4 class="text-success">Price: @Model.Price.ToString("F2") BGN</h4>
+            <h3 class="text-primary">Price: @Model.Price.ToString("F2") BGN</h3>
 
+            <div class="mt-4">
                 @if (User.Identity?.IsAuthenticated ?? false)
                 {
                     <form method="post" asp-controller="Cart" asp-action="AddToCart" asp-route-id="@Model.Id" class="d-inline">
@@ -83,7 +92,22 @@
                     </div>
                 }
 
-                @await Html.PartialAsync("_ReviewFormPartial", new Orpheus.ViewModels.ReviewFormViewModel { ItemId = Model.Id })
+                @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
+                {
+                    @await Html.PartialAsync("_ReviewFormPartial", new ReviewFormViewModel { ItemId = Model.Id })
+                }
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                }
             </div>
 
             <div class="mt-5">
@@ -102,14 +126,7 @@
                                 <div>
                                     @for (int i = 1; i <= 5; i++)
                                     {
-                                        if (i <= review.Rating)
-                                        {
-                                            <span class="text-warning">&#9733;</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-secondary">&#9733;</span>
-                                        }
+                                        <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">&#9733;</span>
                                     }
                                 </div>
                                 @if (!string.IsNullOrWhiteSpace(review.Comment))
@@ -132,13 +149,45 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const hasMultipleRealImages = @multipleRealImages.ToString().ToLower();
+
+            const carouselElement = document.querySelector('#imageCarousel');
+            if (carouselElement) {
+                if (hasMultipleRealImages === "true") {
+                    let carousel = bootstrap.Carousel.getInstance(carouselElement);
+                    if (!carousel) {
+                        carousel = new bootstrap.Carousel(carouselElement, {
+                            interval: false,
+                            wrap: false,
+                            keyboard: true
+                        });
+                    } else {
+                        carousel.pause();
+                    }
+                } else {
+                    const carousel = bootstrap.Carousel.getInstance(carouselElement);
+                    if (carousel) {
+                        carousel.dispose();
+                    }
+                }
+            }
+
             const lightbox = GLightbox({
                 selector: '.glightbox',
-                loop: true,
+                loop: hasMultipleRealImages === "true",
                 zoomable: true,
                 height: '80%',
                 width: '80%'
             });
+
+            if (hasMultipleRealImages === "false") {
+                lightbox.on('open', () => {
+                    const prevBtn = document.querySelector('.gprev');
+                    const nextBtn = document.querySelector('.gnext');
+                    if (prevBtn) prevBtn.style.display = 'none';
+                    if (nextBtn) nextBtn.style.display = 'none';
+                });
+            }
         });
     </script>
 }

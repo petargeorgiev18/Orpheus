@@ -1,6 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Orpheus.Core.DTOs;
 using Orpheus.Core.Interfaces;
+using Orpheus.Data.Models;
 using Orpheus.Data.Models.Enums;
+using Orpheus.Data.Repository.Interfaces;
 using Orpheus.ViewModels;
 
 namespace Orpheus.Controllers
@@ -9,10 +15,16 @@ namespace Orpheus.Controllers
     {
         private readonly IAlbumService albumService;
         private readonly IReviewService reviewService;
-        public AlbumsController(IAlbumService albumService, IReviewService reviewService)
+        private readonly IRepository<Brand, Guid> brandRepo;
+
+        public AlbumsController(
+            IAlbumService albumService,
+            IReviewService reviewService,
+            IRepository<Brand, Guid> brandRepo)
         {
             this.albumService = albumService;
             this.reviewService = reviewService;
+            this.brandRepo = brandRepo;
         }
 
         [HttpGet]
@@ -110,5 +122,133 @@ namespace Orpheus.Controllers
 
             return View(viewModel);
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var vm = new CreateEditItemViewModel();
+            await PopulateDropdownsAsync(vm);
+            return View("Create", vm);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateEditItemViewModel model)
+        {
+            var urls = (model.ImageUrlsRaw ?? "")
+                .Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(u => u.Trim())
+                .Where(u => !string.IsNullOrEmpty(u))
+                .ToList();
+
+            if (!urls.Any()) urls.Add("/images/default-image.png");
+            model.ImageUrls = urls;
+
+            if (!ModelState.IsValid)
+            {
+                await PopulateDropdownsAsync(model);
+                return View("Create", model);
+            }
+
+            var dto = new CreateEditItemDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                BrandId = model.BrandId,
+                ItemType = model.ItemType,
+                ImageUrls = model.ImageUrls
+            };
+
+            await albumService.CreateAsync(dto);
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var album = await albumService.GetByIdAsync(id);
+            if (album == null) return NotFound();
+
+            var vm = new CreateEditItemViewModel
+            {
+                Id = album.Id,
+                Name = album.Name,
+                Description = album.Description,
+                Price = album.Price,
+                BrandId = album.BrandId,
+                ItemType = album.ItemType
+            };
+
+            await PopulateDropdownsAsync(vm);
+            return View("Edit", vm);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> Edit(CreateEditItemViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                await PopulateDropdownsAsync(model);
+                return View("Edit", model);
+            }
+
+            var dto = new CreateEditItemDto
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                Price = model.Price,
+                BrandId = model.BrandId,
+                ItemType = model.ItemType
+            };
+
+            await albumService.UpdateAsync(dto);
+            return RedirectToAction(nameof(Details), new { id = model.Id });
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var album = await albumService.GetByIdAsync(id);
+            if (album == null) return NotFound();
+
+            var vm = new ItemViewModel
+            {
+                Id = album.Id,
+                Name = album.Name,
+                BrandName = album.Brand?.Name ?? "Unknown",
+                Price = album.Price,
+                ImageUrl = album.Images.FirstOrDefault()?.Url ?? "/images/default-image.png"
+            };
+
+            return View(vm);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> ConfirmDelete(Guid id)
+        {
+            await albumService.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Helper method
+        private async Task PopulateDropdownsAsync(CreateEditItemViewModel model)
+        {
+            var brands = await brandRepo.GetAllAsNoTracking().ToListAsync();
+
+            model.Brands = brands.Select(b => new SelectListItem
+            {
+                Value = b.Id.ToString(),
+                Text = b.Name
+            });
+        }
+
     }
 }

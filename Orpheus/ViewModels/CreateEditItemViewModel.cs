@@ -5,7 +5,7 @@ using static Orpheus.Common.EntityClassesValidation.Item;
 
 namespace Orpheus.ViewModels
 {
-    public class CreateEditInstrumentViewModel
+    public class CreateEditItemViewModel
     {
         public Guid Id { get; set; }
 
@@ -25,11 +25,7 @@ namespace Orpheus.ViewModels
         [Required]
         public Guid BrandId { get; set; }
 
-        [Required]
-        public Guid CategoryId { get; set; }
-
-        [Required]
-        public ItemType ItemType { get; set; }
+        public ItemType ItemType { get; set; } = ItemType.Album;
 
         public List<string>? ImageUrls { get; set; }
 

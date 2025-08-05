@@ -51,7 +51,7 @@ namespace Orpheus.Core.Implementations
                 .Take(count)
                 .ToListAsync();
         }
-        public async Task CreateAsync(CreateEditInstrumentDto model)
+        public async Task CreateAsync(CreateEditItemDto model)
         {
             var item = new Item
             {
@@ -74,42 +74,24 @@ namespace Orpheus.Core.Implementations
             await itemRepo.AddAsync(item);
         }
 
-        public async Task UpdateAsync(CreateEditInstrumentDto model)
+        public async Task UpdateAsync(CreateEditItemDto model)
         {
             var item = await itemRepo.GetAllTracked()
-                .Include(i => i.Images)
                 .FirstOrDefaultAsync(i => i.Id == model.Id);
 
-            if (item == null) throw new Exception("Item not found");
+            if (item == null)
+                throw new Exception("Item not found");
 
             item.Name = model.Name;
             item.Description = model.Description;
             item.Price = model.Price;
             item.BrandId = model.BrandId;
             item.CategoryId = model.CategoryId;
+            item.ItemType = model.ItemType;           
 
-            if (model.ImageUrls != null && model.ImageUrls.Any())
-            {
-                var existingUrls = item.Images.Select(i => i.Url).ToHashSet();
-
-                var newImages = model.ImageUrls
-                    .Where(url => !existingUrls.Contains(url))
-                    .Select(url => new ItemImage
-                    {
-                        Id = Guid.NewGuid(),
-                        Url = url,
-                        ItemId = item.Id,
-                        IsMain = url == model.ImageUrls.First()
-                    });
-
-                foreach (var image in newImages)
-                {
-                    item.Images.Add(image);
-                }
-            }
-
-            await itemRepo.SaveChangesAsync(); 
+            await itemRepo.SaveChangesAsync();
         }
+
 
 
         public async Task DeleteAsync(Guid id)
@@ -120,6 +102,5 @@ namespace Orpheus.Core.Implementations
 
             await itemRepo.DeleteAsync(id);
         }
-
     }
 }
