@@ -94,7 +94,10 @@
                     </div>
                 }
 
-                @await Html.PartialAsync("_ReviewFormPartial", new ReviewFormViewModel { ItemId = Model.Id })
+                @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
+                {
+                    @await Html.PartialAsync("_ReviewFormPartial", new ReviewFormViewModel { ItemId = Model.Id })
+                }
             </div>
 
             @if (User.IsInRole("Admin"))

@@ -1,4 +1,5 @@
-﻿using Orpheus.Data.Models;
+﻿using Orpheus.Core.DTOs;
+using Orpheus.Data.Models;
 
 namespace Orpheus.Core.Interfaces
 {
@@ -6,5 +7,8 @@ namespace Orpheus.Core.Interfaces
     {
         Task<IEnumerable<Item>> GetAvailableAlbumsAsync();
         Task<Item?> GetByIdAsync(Guid id);
+        Task CreateAsync(CreateEditItemDto model);
+        Task UpdateAsync(CreateEditItemDto model);
+        Task DeleteAsync(Guid id);
     }
 }

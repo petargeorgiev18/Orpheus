@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Orpheus.Core.DTOs;
 using Orpheus.Data.Models;
 
 namespace Orpheus.Core.Interfaces
@@ -11,5 +12,8 @@ namespace Orpheus.Core.Interfaces
     {
         Task<IEnumerable<Item>> GetAvailableMerchAsync();
         Task<Item?> GetByIdAsync(Guid id);
+        Task CreateAsync(CreateEditItemDto model);
+        Task UpdateAsync(CreateEditItemDto model);
+        Task DeleteAsync(Guid id);
     }
 }

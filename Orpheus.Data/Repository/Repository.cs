@@ -52,7 +52,7 @@ namespace Orpheus.Data.Repository
 
         public IQueryable<TEntity> GetAllTracked()
         {
-            return this.dbSet.AsQueryable();
+            return this.dbSet.AsQueryable().AsTracking();
         }
 
         public async Task<TEntity?> GetByIdAsync(TId id)
@@ -64,7 +64,6 @@ namespace Orpheus.Data.Repository
         {
             await this.context.SaveChangesAsync();
         }
-
         public async Task UpdateAsync(TEntity item)
         {
             if (item == null)
@@ -79,6 +78,9 @@ namespace Orpheus.Data.Repository
         {
             dbSet.RemoveRange(items);
         }
-
+        public void Remove(TEntity item)
+        {
+            this.dbSet.Remove(item);
+        }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250804155358_adfsfasdf")]
+    partial class adfsfasdf
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -420,6 +423,7 @@ namespace Orpheus.Data.Migrations
                         {
                             Id = new Guid("66666666-6666-6666-6666-666666666666"),
                             BrandId = new Guid("99999999-9999-9999-9999-999999999999"),
+                            CategoryId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
                             Description = "Lady Gaga's 2011 album blending pop, dance, and electronic music, celebrated for its themes of empowerment and individuality.",
                             IsAvailable = true,
                             ItemType = 2,
@@ -430,6 +434,7 @@ namespace Orpheus.Data.Migrations
                         {
                             Id = new Guid("77777777-7777-7777-7777-777777777777"),
                             BrandId = new Guid("88888888-8888-8888-8888-888888888888"),
+                            CategoryId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
                             Description = "Metallica's iconic thrash metal album released in 1986.",
                             IsAvailable = true,
                             ItemType = 2,
@@ -440,6 +445,7 @@ namespace Orpheus.Data.Migrations
                         {
                             Id = new Guid("88888888-8888-8888-8888-888888888888"),
                             BrandId = new Guid("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                            CategoryId = new Guid("dddddddd-dddd-dddd-dddd-dddddddddddd"),
                             Description = "Pink Floyd's 1973 album, a landmark in progressive rock.",
                             IsAvailable = true,
                             ItemType = 2,

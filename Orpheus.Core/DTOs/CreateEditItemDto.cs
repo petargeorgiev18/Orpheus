@@ -3,7 +3,7 @@ using Orpheus.Data.Models.Enums;
 
 namespace Orpheus.Core.DTOs
 {
-    public class CreateEditInstrumentDto
+    public class CreateEditItemDto
     {
         public Guid Id { get; set; }
 

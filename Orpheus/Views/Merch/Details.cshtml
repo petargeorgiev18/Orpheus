@@ -80,7 +80,18 @@
 
                 <a asp-action="Index" asp-controller="Merch" class="btn btn-outline-secondary mt-3 d-block">← Back to list</a>
 
-                @* Show Review error message if any *@
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
+                }
+
                 @if (TempData["ReviewError"] != null)
                 {
                     <div class="alert alert-danger mt-3">
@@ -88,7 +99,10 @@
                     </div>
                 }
 
-                @await Html.PartialAsync("_ReviewFormPartial", new Orpheus.ViewModels.ReviewFormViewModel { ItemId = Model.Id })
+                @if (User.Identity?.IsAuthenticated == true && !User.IsInRole("Admin"))
+                {
+                    @await Html.PartialAsync("_ReviewFormPartial", new Orpheus.ViewModels.ReviewFormViewModel { ItemId = Model.Id })
+                }
             </div>
 
             <div class="mt-5">
@@ -107,14 +121,7 @@
                                 <div>
                                     @for (int i = 1; i <= 5; i++)
                                     {
-                                        if (i <= review.Rating)
-                                        {
-                                            <span class="text-warning">&#9733;</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-secondary">&#9733;</span>
-                                        }
+                                        <span class="@(i <= review.Rating ? "text-warning" : "text-secondary")">&#9733;</span>
                                     }
                                 </div>
                                 @if (!string.IsNullOrWhiteSpace(review.Comment))
