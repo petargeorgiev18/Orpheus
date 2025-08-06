@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Orpheus.Data.Models;
-using Orpheus.Data.Models.Configurations;
 using Orpheus.Data.Models.Enums;
 
 namespace Orpheus.Data
@@ -29,11 +28,6 @@ namespace Orpheus.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.ApplyConfiguration(new CategoryConfiguration());
-            builder.ApplyConfiguration(new BrandConfiguration());
-            builder.ApplyConfiguration(new ItemConfiguration());
-            builder.ApplyConfiguration(new ItemImagesConfiguration());
         }
     }
 }
