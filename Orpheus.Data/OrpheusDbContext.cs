@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Orpheus.Data.Models;
 using Orpheus.Data.Models.Configurations;
+using Orpheus.Data.Models.Enums;
 
 namespace Orpheus.Data
 {
