@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Orpheus.Data.Models;
 
 namespace Orpheus.Data.Models.Configurations
 {
@@ -12,40 +10,46 @@ namespace Orpheus.Data.Models.Configurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
-            builder.HasData(CreateCategories());
+            //builder.HasData(CreateCategories());
         }
+
         public IEnumerable<Category> CreateCategories()
         {
             return new List<Category>
             {
                 new Category
                 {
-                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Id = Guid.Parse("BEB86BB8-F8F7-4844-B25C-2DE79D077F39"),
+                    CategoryName = "Wooden"
+                },
+                new Category
+                {
+                    Id = Guid.Parse("AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"),
                     CategoryName = "Guitars"
                 },
                 new Category
                 {
-                    Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    Id = Guid.Parse("BBBBBBBB-BBBB-BBBB-BBBB-BBBBBBBBBBBB"),
                     CategoryName = "Drums"
                 },
                 new Category
                 {
-                    Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"),
+                    Id = Guid.Parse("CCCCCCCC-CCCC-CCCC-CCCC-CCCCCCCCCCCC"),
                     CategoryName = "Keyboards"
                 },
                 new Category
                 {
-                    Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd"),
+                    Id = Guid.Parse("DDDDDDDD-DDDD-DDDD-DDDD-DDDDDDDDDDDD"),
                     CategoryName = "Albums"
                 },
                 new Category
                 {
-                    Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee"),
+                    Id = Guid.Parse("EEEEEEEE-EEEE-EEEE-EEEE-EEEEEEEEEEEE"),
                     CategoryName = "Merch"
                 },
                 new Category
                 {
-                    Id = Guid.Parse("ffffffff-ffff-ffff-ffff-ffffffffffff"),
+                    Id = Guid.Parse("FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"),
                     CategoryName = "Accessories"
                 }
             };

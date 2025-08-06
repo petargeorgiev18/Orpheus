@@ -18,7 +18,7 @@ namespace Orpheus
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("OrpheusDbConnection") 
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
             builder.Services.AddDbContext<OrpheusDbContext>(options =>
@@ -82,7 +82,25 @@ namespace Orpheus
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                await IdentitySeedData.InitializeAsync(services);
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                var dbContext = services.GetRequiredService<OrpheusDbContext>();
+
+                try
+                {
+                    await dbContext.Database.EnsureDeletedAsync();
+                    logger.LogInformation("Database deleted successfully");
+
+                    await dbContext.Database.EnsureCreatedAsync();
+                    logger.LogInformation("Database created successfully");
+
+                    await IdentitySeedData.InitializeAsync(services);
+                    await ItemSeedData.InitializeAsync(services);
+                    logger.LogInformation("Seeding completed successfully");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred during database initialization");
+                }
             }
 
             app.Run();
