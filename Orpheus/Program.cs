@@ -7,6 +7,7 @@ using Orpheus.Data.Repository.Interfaces;
 using Orpheus.Data.Repository;
 using Orpheus.Core.Implementations;
 using Orpheus.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace Orpheus
 {
@@ -26,7 +27,7 @@ namespace Orpheus
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<OrpheusAppUser>
-                (options => options.SignIn.RequireConfirmedAccount = true)
+                (options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole<Guid>>()
                 .AddEntityFrameworkStores<OrpheusDbContext>();
 

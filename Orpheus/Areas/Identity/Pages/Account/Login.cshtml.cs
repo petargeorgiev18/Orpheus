@@ -1,16 +1,12 @@
 ﻿#nullable disable
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using Orpheus.Data.Models; // your namespace for OrpheusAppUser
+using Orpheus.Data.Models;
 
 namespace Orpheus.Areas.Identity.Pages.Account
 {
@@ -37,6 +33,7 @@ namespace Orpheus.Areas.Identity.Pages.Account
         {
             [Required]
             [EmailAddress]
+            [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Please enter a valid email address.")]
             public string Email { get; set; }
 
             [Required]
@@ -52,7 +49,6 @@ namespace Orpheus.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            // Clear existing external cookie to ensure clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
         }
 
@@ -63,7 +59,6 @@ namespace Orpheus.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                // This doesn't count login failures towards account lockout
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
@@ -87,7 +82,6 @@ namespace Orpheus.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }

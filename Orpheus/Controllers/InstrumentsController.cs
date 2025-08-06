@@ -95,6 +95,8 @@ namespace Orpheus.Controllers
             ViewBag.Brand = brand;
             ViewBag.Price = price;
 
+            await PopulateDropdownsForFilteringAsync();
+
             return View(itemsOnPage);
         }
 
@@ -137,7 +139,10 @@ namespace Orpheus.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var viewModel = new CreateEditInstrumentViewModel();
+            var viewModel = new CreateEditInstrumentViewModel
+            {
+                ItemType = ItemType.Instrument 
+            }; 
             await PopulateDropdownsAsync(viewModel);
             return View("Create", viewModel);
         }
@@ -277,6 +282,27 @@ namespace Orpheus.Controllers
                 Value = c.Id.ToString(),
                 Text = c.CategoryName
             });
+        }
+
+        //Helper method to populate dropdowns for brands and categories when filtering
+        private async Task PopulateDropdownsForFilteringAsync()
+        {
+            var brands = await brandRepo.GetAllAsNoTracking().ToListAsync();
+            var categories = await categoryRepo.GetAllAsNoTracking().ToListAsync();
+
+            ViewBag.CategoriesList = categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoryName,
+                    Text = c.CategoryName
+                });
+
+            ViewBag.BrandsList = brands
+                .Select(b => new SelectListItem
+                {
+                    Value = b.Name,
+                    Text = b.Name
+                });
         }
     }
 }

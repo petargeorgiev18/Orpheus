@@ -18,6 +18,7 @@ namespace Orpheus.Core.Implementations
             this.cartRepository = cartRepository;
             this.itemRepository = itemRepository;
         }
+
         public async Task AddToCartAsync(Guid itemId, Guid userId)
         {
             var item = await itemRepository

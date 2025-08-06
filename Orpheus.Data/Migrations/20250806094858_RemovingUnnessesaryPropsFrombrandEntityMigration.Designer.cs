@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Orpheus.Data;
 
@@ -11,9 +12,11 @@ using Orpheus.Data;
 namespace Orpheus.Data.Migrations
 {
     [DbContext(typeof(OrpheusDbContext))]
-    partial class OrpheusDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250806094858_RemovingUnnessesaryPropsFrombrandEntityMigration")]
+    partial class RemovingUnnessesaryPropsFrombrandEntityMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,7 +177,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands", (string)null);
+                    b.ToTable("Brands");
 
                     b.HasData(
                         new
@@ -259,7 +262,7 @@ namespace Orpheus.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Carts", null, t =>
+                    b.ToTable("Carts", t =>
                         {
                             t.HasComment("User's Cart");
                         });
@@ -286,7 +289,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("CartsItems", (string)null);
+                    b.ToTable("CartsItems");
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Category", b =>
@@ -302,7 +305,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -374,7 +377,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Items", (string)null);
+                    b.ToTable("Items");
 
                     b.HasData(
                         new
@@ -512,7 +515,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
 
                     b.HasData(
                         new
@@ -669,7 +672,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.OrderItem", b =>
@@ -696,7 +699,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.OrpheusAppUser", b =>
@@ -812,7 +815,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.Wishlist", b =>
@@ -829,7 +832,7 @@ namespace Orpheus.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("Orpheus.Data.Models.WishlistItem", b =>
@@ -855,7 +858,7 @@ namespace Orpheus.Data.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("WishlistsItems", (string)null);
+                    b.ToTable("WishlistsItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

@@ -18,6 +18,15 @@
     @if (User.IsInRole("Admin"))
     {
         <div class="text-end mb-3">
+            <a asp-controller="Categories" asp-action="Create" class="btn btn-warning me-2">
+                <i class="bi bi-folder-plus"></i> Add New Category
+            </a>
+            <a asp-controller="Brands" asp-action="Create" class="btn btn-info me-2">
+                <i class="bi bi-tag"></i> Add New Brand
+            </a>
+        </div>
+
+        <div class="text-end mb-3">
             <a asp-controller="Instruments" asp-action="Create" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Add New Instrument
             </a>
@@ -33,22 +42,28 @@
         <div class="col-md-2">
             <select name="category" class="form-select">
                 <option value="">All Categories</option>
-                <option value="Guitars" selected="@(selectedCategory == "Guitars")">Guitars</option>
-                <option value="Drums" selected="@(selectedCategory == "Drums")">Drums</option>
-                <option value="Keyboards" selected="@(selectedCategory == "Keyboards")">Keyboards</option>
-                <option value="Other" selected="@(selectedCategory == "Other")">Other</option>
+                @foreach (var category in (IEnumerable<SelectListItem>)ViewBag.CategoriesList)
+                {
+                    <option value="@category.Value" selected="@(selectedCategory == category.Value)">
+                        @category.Text
+                    </option>
+                }
             </select>
         </div>
+
 
         <div class="col-md-2">
             <select name="brand" class="form-select">
                 <option value="">All Brands</option>
-                <option value="Fender" selected="@(selectedBrand == "Fender")">Fender</option>
-                <option value="Gibson" selected="@(selectedBrand == "Gibson")">Gibson</option>
-                <option value="Yamaha" selected="@(selectedBrand == "Yamaha")">Yamaha</option>
-                <option value="Other" selected="@(selectedBrand == "Other")">Other</option>
+                @foreach (var brand in (IEnumerable<SelectListItem>)ViewBag.BrandsList)
+                {
+                    <option value="@brand.Value" selected="@(selectedBrand == brand.Value)">
+                        @brand.Text
+                    </option>
+                }
             </select>
         </div>
+
 
         <div class="col-md-2">
             <select name="price" class="form-select">

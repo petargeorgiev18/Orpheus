@@ -16,6 +16,9 @@
     @if (User.IsInRole("Admin"))
     {
         <div class="text-end mb-3">
+            <a asp-controller="Brands" asp-action="Create" class="btn btn-info me-2">
+                <i class="bi bi-tag"></i> Add New Brand
+            </a>
             <a asp-controller="Accessories" asp-action="Create" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Add New Accessory
             </a>
