@@ -1,0 +1,29 @@
+﻿@model Orpheus.ViewModels.CreateBrandViewModel
+
+@{
+    ViewData["Title"] = "Add New Brand";
+
+    var type = (ViewData["Type"] as string) ?? "brand";
+    var isAlbum = type.Contains("album");
+    var buttonText = isAlbum ? "Add Label" : "Add Brand";
+    var headingText = isAlbum ? "Add New Label" : "Add New Brand";
+    var labelText = isAlbum ? "Label Name" : "Brand Name";
+}
+
+<h2>@headingText</h2>
+
+<form asp-action="Create" method="post" class="mb-3">
+    <div class="mb-3">
+        <label class="form-label">@labelText</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">@buttonText</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

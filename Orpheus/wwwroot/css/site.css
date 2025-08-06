@@ -72,3 +72,8 @@ body {
 main {
     flex: 1;
 }
+
+.album-image {
+    height: 200px;
+    object-fit: cover;
+}

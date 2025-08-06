@@ -16,6 +16,9 @@
     @if (User.IsInRole("Admin"))
     {
         <div class="text-end mb-3">
+            <a asp-controller="Brands" asp-action="Create" asp-route-type="album" class="btn btn-info me-2">
+                <i class="bi bi-tag"></i> Add New Label
+            </a>
             <a asp-controller="Albums" asp-action="Create" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Add New Album
             </a>

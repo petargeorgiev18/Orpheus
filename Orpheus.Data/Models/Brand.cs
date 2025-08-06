@@ -10,11 +10,7 @@ namespace Orpheus.Data.Models
         public Guid Id { get; set; }
         [Required]
         [MaxLength(BrandNameMaxLength)]
-        public string Name { get; set; } = null!;
-        [Required]
-        [MaxLength(BrandDescriptionMaxLength)]
-        public string? Description { get; set; }
-        [Required]
+        public string Name { get; set; } = null!;       
         [MaxLength(BrandLogoUrlMaxLength)]
         public string? LogoUrl { get; set; }
         public ICollection<Item> Items { get; set; }

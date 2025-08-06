@@ -80,7 +80,7 @@
 
     <h2 class="section-title text-center mb-4">🎧 New Albums</h2>
     <div class="row">
-        @foreach (var album in Model.FeaturedAlbums)
+        @foreach (var album in Model.FeaturedAlbums.Take(3))
         {
             <div class="col-md-4 mb-3">
                 <div class="card h-100 text-center">
